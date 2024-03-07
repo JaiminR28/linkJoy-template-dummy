@@ -5,6 +5,7 @@ const {
 	getValidUrl,
 	stripTags,
 	pagebuilderSocialLink,
+	pagebuilderDelimiterSvg,
 } = require("../helperFile");
 
 exports.data = {
@@ -16,6 +17,7 @@ exports.data = {
 	blockHideOrShowWithSchedule,
 	stripTags,
 	pagebuilderSocialLink,
+	pagebuilderDelimiterSvg,
 	useragent: {
 		isYaBrowser: false,
 		isAuthoritative: true,
@@ -452,7 +454,7 @@ exports.data = {
 			title: null,
 			name: "Delimiter",
 			icon: "code-slash-outline",
-			layout_type: 12,
+			layout_type: 7,
 			is_hidden: false,
 			is_scheduled: false,
 			scheduled_start_date: null,

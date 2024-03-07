@@ -1,0 +1,25 @@
+<% if (pagebuilder_body['module_type'] === 'delimiter') { %>
+<% if (blockHideOrShowWithSchedule(pagebuilder_body['module_type'],pagebuilder_body['is_hidden'],pagebuilder_body['is_scheduled'],pagebuilder_body['scheduled_start_date'],pagebuilder_body['scheduled_end_date'])) { %>
+
+<div class="subtitle-init margin-bottom-60 m-auto" id="delimiter-render-<%= key || '' %>">
+  <div class="delimiter-chooser delimiter-break subtitle-row" style="border:none; text-align: center;">
+    <div class="delimiter-break-inner" style="display: inline-block;">
+      <% if (pagebuilder_body && pagebuilder_body.layout_type) { %>
+      <% if (pagebuilder_body.layout_type > 1) { %>
+      <%- pagebuilderDelimiterSvg(pagebuilder_body.layout_type) || '' %>
+      <script>
+        document.addEventListener('DOMContentLoaded', function() {
+          var pagebuilderBody = "<%= JSON.stringify(pagebuilder_body) || '{}' %>";
+          var keyIndex = "<%= key || '' %>";
+          lineColorSet(pagebuilderBody, keyIndex);
+        });
+      </script>
+      <% } %>
+      <% } %>
+    </div>
+  </div>
+</div>
+
+
+<% } %>
+<% } %>

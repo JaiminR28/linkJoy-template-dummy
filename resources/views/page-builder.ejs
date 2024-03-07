@@ -155,7 +155,12 @@
         <!--End Video Player -->
 
         <!--Start delimiter code -->
-        <!-- TODO: jaimin - ('page-builder.delimiter-section' ) Yet to be created -->
+        <%- include('page-builder/delimiter-section.ejs', {
+          pagebuilderDelimiterSvg,
+          blockHideOrShowWithSchedule : blockHideOrShowWithSchedule,
+            key : key,
+            pagebuilder_body : pagebuilder_body
+          }) %>
         <!--End delimiter code -->
 
         <!--Start image carousel code -->
