@@ -1,0 +1,71 @@
+<% if (pagebuilder_body['module_type'] === 'messengers_block') { %>
+<% if (blockHideOrShowWithSchedule(pagebuilder_body['module_type'],pagebuilder_body['is_hidden'],pagebuilder_body['is_scheduled'],pagebuilder_body['scheduled_start_date'],pagebuilder_body['scheduled_end_date'])) { %>
+<div class="subtitle-init margin-bottom-60">
+  <div class="top">
+    <div class="subtitle-row <%= ( pagebuilder_body['animate'])?$pagebuilder_body['animate']:'';  %>">
+      <div class="column col-2 d-none"></div>
+      <div class="column col-12 d-flex flex-row flex-wrap justify-content-center align-items-center m-0 px-0 messenger-blocks" style="width: 100%;">
+        <% if (pagebuilder_body['module_data']) { %>
+        <% pagebuilder_body['module_data'].forEach((social_data) => { %>
+        <% if (social_data['link'] != "") { %>
+        <% const layout = pagebuilder_body.layout_type || '';  %>
+        <% const type = social_data.type || ''; %>
+        <%   const name = social_data.name || '';  %>
+        <%   const page_id = social_data.link || '';  %>
+        <%   const text = social_data.text || ''; %>
+
+        <% const fontIconColor = (button_style.background && button_style.background) || ''; %>
+        <% const r = parseInt(fontIconColor.substring(1, 3), 16); %>
+        <% const g = parseInt(fontIconColor.substring(3, 5), 16); %>
+        <% const b = parseInt(fontIconColor.substring(5, 7), 16);  %>
+        <% const yiq = (r * 299 + g * 587 + b * 114) / 1000;  %>
+        <% const fontColor = yiq >= 128 ? "black" : "white";  %>
+
+        <% 
+        let width = '';
+        if (layout == 1) {
+        width = "messenger-layout-1";
+        } else if (layout == 2) {
+        width = "messenger-layout-2";
+        } else if (layout == 3) {
+        width = "messenger-layout-3";
+        }
+        %>
+        <div class="cursor-pointer render-messenger" style="display: contents">
+          <span class="left-box-social  <%= width ? width : '' %> ">
+            <a style="text-decoration: none;" href="javascript:void(0)" class="redirect_url_call messenger-button el-button el-button--primary font-weight-normal text-decoration-none d-flex justify-content-center align-items-center" data-href="<%= page_id && page_id !== '' ? pagebuilderSocialLink(useragent, type, page_id, text) : '#' %>">
+              <img src="<%= social_data.icon ? 'sprite/svg/' + social_data.icon + '-' + fontColor + '.svg' : '' %>" class="messenger-icons" />
+              <% if (layout && layout === 1) { %>
+              <span class="ml-3 mb-0 h6 font-weight-bolder text-wrap">
+                <%= name || '' %>
+              </span>
+              <% } %>
+            </a>
+          </span>
+        </div>
+        <% } %>
+        <% }) %>
+        <script>
+          $(document).ready(function() {
+            var background_color = "<%= button_style.background || '' %>";
+            var layout_type = "<%= pagebuilder_body.layout || '' %>";
+            var key_index = "<%= key || '' %>";
+            let hexColor = background_color && background_color !== undefined ? background_color.split("#")[1] : "";
+            var r = parseInt(hexColor.substr(0, 2), 16);
+            var g = parseInt(hexColor.substr(2, 2), 16);
+            var b = parseInt(hexColor.substr(4, 2), 16);
+            var yiq = (r * 299 + g * 587 + b * 114) / 1000;
+            let fontColor = yiq >= 128 ? "black" : "white";
+            $(".messenger-button").css({
+              color: fontColor,
+            });
+          });
+        </script>
+        <% } %>
+      </div>
+      <div class="column col-2 d-none"></div>
+    </div>
+  </div>
+</div>
+<% } %>
+<% } %>
