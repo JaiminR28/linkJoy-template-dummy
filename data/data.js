@@ -1150,7 +1150,7 @@ exports.data = {
 				controls: true,
 				autoplay: true,
 			},
-			animate: "tada",
+			animate: "",
 			layout_type: [],
 		},
 		{
@@ -1174,7 +1174,7 @@ exports.data = {
 				title: "<p>Shark Tank</p>",
 				url: "https://youtu.be/c86-du7sxzQ?feature=shared",
 			},
-			animate: "shake",
+			animate: "",
 		},
 		{
 			id: 89261,
