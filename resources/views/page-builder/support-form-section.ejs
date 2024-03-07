@@ -3,7 +3,7 @@
 <div class="subtitle-init margin-bottom-60 m-auto" style="width: 100%;">
   <div class="top">
     <div class="subtitle-row">
-      <form action="" class="class=" el-form render-subscribe-form support-form-<%= pagebuilder_body['module_data']['payment_mode'] ? pagebuilder_body['module_data']['payment_mode'] : '' %> style="margin-top: 20px;background:<%= pagebuilder_body['background_color'] ? pagebuilder_body['background_color'] : '#979797'; %> background:<%=  (pagebuilder_body['layout_type'] == 0)?'none;':'';  %>">
+      <form action="" class="class=" el-form render-subscribe-form support-form-<%= pagebuilder_body['module_data']['payment_mode'] ? pagebuilder_body['module_data']['payment_mode'] : '' %> style="margin-top: 20px;background:<%= pagebuilder_body['background_color'] ? pagebuilder_body['background_color'] : '#945'; %>;background:<%=  (pagebuilder_body['layout_type'] == 0)?'none;':'';  %>">
         <input type="hidden" name="id" value="<%=  page_builder_id  %>">
 
         <% if (pagebuilder_body['layout_type'] && pagebuilder_body['layout_type'] === 1) { %>
@@ -11,18 +11,76 @@
           <%-  pagebuilder_body['module_data']['heading']['value'] ? pagebuilder_body['module_data']['heading']['value'] : '' %>
         </span>
         <span style="text-align:center">
-          <%= pagebuilder_body.module_data.support_desc.value || '' %>
+          <%- pagebuilder_body.module_data.support_desc.value || '' %>
         </span>
 
         <div style="display:inline-flex;">
           <span style="text-align:center">
-            <%= pagebuilder_body.module_data.buy_desc.value || '' %>
+            <%- pagebuilder_body.module_data.buy_desc.value || '' %>
           </span>
 
           <h4 style="text-align:center;font-weight:bold;">
             &nbsp;&nbsp;<%= pagebuilder_body.module_data.unit_price.value ? '$' + pagebuilder_body.module_data.unit_price.value : '' %>
           </h4>
         </div>
+        <% } %>
+
+        <% if (pagebuilder_body['module_data']['button']['value']) { %>
+        <% if (pagebuilder_body['module_data']['payment_mode'] === 'Razorpay') { %>
+
+        <button type="button" data-value='{
+          "key": "<%= payment_integration_data.razorpay_key || '' %>",
+          "amount": <%= pagebuilder_body.module_data.unit_price.value || 0 %>,
+          "currency": "USD",
+          "name": "<%= pagebuilder_body.module_data.buy_desc.value ? stripTags(pagebuilder_body.module_data.buy_desc.value) : '' %>",
+          "description": "<%= pagebuilder_body.module_data.support_desc.value ? stripTags(pagebuilder_body.module_data.support_desc.value) : '' %>",
+          "theme": {"color": "#3399cc"}
+        }' data-order='{
+          "page_builder_id": "<%= page_builder_id || '' %>",
+          "form_id": "<%= pagebuilder_body.id || '' %>",
+          "type": "Razorpay",
+          "amount": "<%= pagebuilder_body.module_data.unit_price.value || 0 %>",
+          "currency": "USD",
+          "callback_url": "<%= pagebuilder_body.module_data.support_success_url.value || url().current() %>"
+        }' style="width:100%;" class="razorpay-payment-btn-init payment-btn el-button el-button--primary font-weight-normal text-decoration-none">
+          <span class="remove-margin text-wrap">
+            <%- pagebuilder_body.module_data.button.value || '' %>
+          </span>
+        </button>
+
+        <% } else if (pagebuilder_body['module_data']['payment_mode'] === "Paypal") { %>
+        <button type="button" data-order='{
+          "page_builder_id": "<%= page_builder_id || '' %>",
+          "form_id": "<%= pagebuilder_body.id || '' %>",
+          "type": "Paypal",
+          "amount": "<%= pagebuilder_body.module_data.unit_price.value || 0 %>",
+          "currency": "USD",
+          "description": "<%= pagebuilder_body.module_data.buy_desc.value ? stripTags(pagebuilder_body.module_data.buy_desc.value) : '' %>",
+          "cancel_url": "<%= url().current() %>?page_builder_id=<%= page_builder_id || '' %>&form_id=<%= pagebuilder_body.id || '' %>&type=Paypal",
+          "success_url": "<%= url().current() %>?page_builder_id=<%= page_builder_id || '' %>&form_id=<%= pagebuilder_body.id || '' %>&success_redirect_url=<%= pagebuilder_body.module_data.support_success_url.value || '' %>&type=Paypal"
+        }' style="width:100%;" class="paypal-payment-btn-init payment-btn el-button el-button--primary font-weight-normal text-decoration-none">
+          <span class="remove-margin text-wrap">
+            <%- pagebuilder_body.module_data.button.value || '' %>
+          </span>
+        </button>
+
+        <% } else if (pagebuilder_body['module_data']['payment_mode'] === 'Stripe') { %>
+        <button type="button" data-order='{
+          "page_builder_id": "<%= page_builder_id || '' %>",
+          "form_id": "<%= pagebuilder_body.id || '' %>",
+          "type": "Stripe",
+          "amount": "<%= pagebuilder_body.module_data.unit_price.value || 0 %>",
+          "currency": "USD",
+          "description": "<%= pagebuilder_body.module_data.buy_desc.value ? stripTags(pagebuilder_body.module_data.buy_desc.value) : '' %>",
+          "cancel_url": "<%= url().current() %>?session_id={CHECKOUT_SESSION_ID}&page_builder_id=<%= page_builder_id || '' %>&form_id=<%= pagebuilder_body.id || '' %>&type=Stripe",
+          "success_url": "<%= url().current() %>?session_id={CHECKOUT_SESSION_ID}&page_builder_id=<%= page_builder_id || '' %>&form_id=<%= pagebuilder_body.id || '' %>&success_redirect_url=<%= pagebuilder_body.module_data.support_success_url.value || '' %>&type=Stripe"
+        }' style="width:100%;" class="stripe-payment-btn-init payment-btn el-button el-button--primary font-weight-normal text-decoration-none">
+          <span class="remove-margin text-wrap">
+            <%- pagebuilder_body.module_data.button.value || '' %>
+          </span>
+        </button>
+
+        <% } %>
         <% } %>
 
       </form>

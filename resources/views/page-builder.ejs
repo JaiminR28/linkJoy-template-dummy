@@ -163,10 +163,17 @@
 
         <!--Start messenger block code -->
         <!-- TODO: jaimin - ('page-builder.messenger-links-section' ) Yet to be created -->
+
         <!--End messenger block code -->
 
         <!--Start support form -->
-        <!-- TODO: jaimin - ('page-builder.support-form-section' ) Yet to be created -->
+        <%- include('page-builder/support-form-section.ejs', {
+          payment_integration_data : payment_integration_data,
+          blockHideOrShowWithSchedule : blockHideOrShowWithSchedule,
+          key : key,
+          pagebuilder_body : pagebuilder_body,
+          stripTags : stripTags
+        }) %>
         <!--End support form -->
 
         <!--Start button text code -->
