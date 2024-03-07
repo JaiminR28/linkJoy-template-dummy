@@ -170,12 +170,16 @@
         <!--End email or sms form -->
 
         <!--Start messenger block code -->
-        <!-- TODO: jaimin - ('page-builder.messenger-links-section' ) Yet to be created -->
-
+        <%- include('page-builder/messenger-links-section.ejs', {
+          useragent : useragent,
+          blockHideOrShowWithSchedule : blockHideOrShowWithSchedule,
+          key : key,
+          pagebuilder_body : pagebuilder_body,
+        }) %>
         <!--End messenger block code -->
 
         <!--Start support form -->
-        <!-- TODO : Jaimin - do look at it during the testing -->
+        <!-- ! : Jaimin - do look at it during the testing -->
         <%- include('page-builder/support-form-section.ejs', {
           currentUrl: currentUrl,
           payment_integration_data : payment_integration_data,
