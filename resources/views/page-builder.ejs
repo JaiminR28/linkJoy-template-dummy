@@ -127,6 +127,7 @@
 
         <!--Start instagram feed code -->
         <!-- TODO: jaimin - ('page-builder.instagram-feed-section' ) Yet to be created -->
+
         <!--End instagram feed code -->
 
         <!--Start youtube videos code -->
@@ -162,11 +163,21 @@
         <!--End image carousel code -->
 
         <!--Start dynamic blog -->
-        <!-- TODO: jaimin - ('page-builder.dynamic-feed-section' ) Yet to be created -->
+        <%- include('page-builder/dynamic-feed-section.ejs', {
+            blockHideOrShowWithSchedule : blockHideOrShowWithSchedule,
+            key : key,
+            pagebuilder_body : pagebuilder_body,
+          }) %>
         <!--End dynamic blog -->
 
         <!--Start email or sms form -->
-        <!-- TODO: jaimin - ('page-builder.email-sms-form-section' ) Yet to be created -->
+        <!-- TODO: jaimin - check the csrf token once -->
+        <%- include('page-builder/email-sms-form-section.ejs', {
+          getValidUrl : getValidUrl,
+          blockHideOrShowWithSchedule : blockHideOrShowWithSchedule,
+          key : key,
+          pagebuilder_body : pagebuilder_body,
+        }) %>
         <!--End email or sms form -->
 
         <!--Start messenger block code -->
