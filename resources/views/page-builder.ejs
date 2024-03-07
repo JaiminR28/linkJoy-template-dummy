@@ -95,7 +95,7 @@
         <!--End profile code -->
         <%- include('page-builder/profile-section.ejs', {profile : profile, getValidURL : getValidUrl}) %>
         <!--End profile code -->
-        <% const image_carousel = false; %>
+        <% var image_carousel = false; %>
         <% if (pagebuilder && pagebuilder.length !== 0) { %>
         <% pagebuilder.forEach((pagebuilder_body, key) => { %>
         <!--Start subtitle text code -->
@@ -158,7 +158,11 @@
         <!--End delimiter code -->
 
         <!--Start image carousel code -->
-        <!-- TODO: jaimin - ('page-builder.image-carousel-section' ) Yet to be created -->
+        <%- include('page-builder/image-carousel-section.ejs', {
+                            blockHideOrShowWithSchedule : blockHideOrShowWithSchedule,
+                            key : key,
+                            pagebuilder_body : pagebuilder_body,
+                            image_carousel: image_carousel }) %>
         <!--End image carousel code -->
 
         <!--Start dynamic blog -->

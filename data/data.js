@@ -1190,5 +1190,41 @@ exports.data = {
       },
       animate: "shake",
     },
+    {
+      id: 3,
+      position: true,
+      module_type: "image-carousel",
+      title:
+        '<h1><strong style="color: rgb(135, 206, 235);">hell0 this is image carousel section</strong><span class="ql-emojiblot" data-name="boy">\ufeff<span contenteditable="false"><span class="ap ap-boy">👦</span></span>\ufeff</span></h1>',
+      name: "Image Carousel",
+      icon: "images-outline",
+      layout_type: 6,
+      is_hidden: false,
+      is_scheduled: false,
+      scheduled_start_date: null,
+      scheduled_end_date: {
+        start: "0:21 pm",
+        end: "0:26 pm",
+        timezone: "Asia/Calcutta",
+      },
+      slide_title:
+        '<h1><strong style="color: rgb(135, 206, 235);">hell0 this is image carousel section</strong><span class="ql-emojiblot" data-name="boy">\ufeff<span contenteditable="false"><span class="ap ap-boy">👦</span></span>\ufeff</span></h1>',
+      slide_transition: "2",
+      height: 450,
+      border_radius: 0,
+      module_data: [
+        {
+          image:
+            "https://linkjoy-production.s3.us-west-2.amazonaws.com/developement/publicpagebuilder/13365e0beda61-79a1-40b4-acc9-f2122f1b8fdc",
+          url: "",
+        },
+        {
+          image:
+            "https://linkjoy-production.s3.us-west-2.amazonaws.com/developement/publicpagebuilder/1336581ff87e3-b326-4105-86d6-56323678c479",
+          url: "",
+        },
+      ],
+      value: "300",
+    },
   ],
 };

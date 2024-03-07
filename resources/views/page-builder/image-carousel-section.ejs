@@ -1,0 +1,30 @@
+<% if (pagebuilder_body.module_type === 'image-carousel') { %>
+<% if (blockHideOrShowWithSchedule(pagebuilder_body.module_type, pagebuilder_body.is_hidden, pagebuilder_body.is_scheduled, pagebuilder_body.scheduled_start_date, pagebuilder_body.scheduled_end_date)) { %>
+<div class="subtitle-init margin-bottom-60">
+    <div class="top">
+        <div class="subtitle-row">
+            <div>
+                <span style="margin-bottom: 12px;">
+                    <%- pagebuilder_body.slide_title ? pagebuilder_body.slide_title : '' %>
+                </span>
+            </div>
+            <% var layout = pagebuilder_body.layout_type ? pagebuilder_body.layout_type : 1; %>
+
+            <% if (!image_carousel) { %>
+            <link rel="stylesheet" type="text/css" href="css/style.css" />
+            <% } %>
+
+            <% if(layout > 0) { %>
+            <%- include('../sliders/slider-' + layout +'.ejs', {key: key, pagebuilder_body: pagebuilder_body}) %>
+            <% } %>
+
+            <% if (!image_carousel) { %>
+            <script type='text/javascript' src='js/common.js'></script>
+            <% image_carousel = true; %>
+            <% } %>
+
+        </div>
+    </div>
+</div>
+<% } %>
+<% } %>

@@ -1,0 +1,48 @@
+<% var layout = pagebuilder_body.layout_type ? pagebuilder_body.layout_type : 1; %>
+<% if (pagebuilder_body.module_data && pagebuilder_body.module_data.length > 0) { %>
+<div style="display: inline-block; width:100%!important">
+  <div class="hero-sm">
+    <div class="inner">
+      <div id="flip-slider-<%= key %>"></div>
+    </div>
+  </div>
+</div>
+
+<script type="text/javascript">
+document.addEventListener('DOMContentLoaded', function() {
+  setTimeout(() => {
+    var slideTpl = "";
+    var layout = "<%= layout %>";
+    var key_index = "<%= key %>";
+    var slidesss = '<%- JSON.stringify(pagebuilder_body.module_data) %>';
+    var slides = slidesss ? slidesss : [];
+    var interval = "<%= pagebuilder_body.slide_transition ? pagebuilder_body.slide_transition * 1000 : '' %>";
+    var height = "<%= pagebuilder_body.height ? pagebuilder_body.height : '' %>";
+    var position = "<%= pagebuilder_body.position ? pagebuilder_body.position : false %>";
+
+    var slidesArray = JSON.parse(slides);
+    slidesArray.forEach((slide, index) => {
+      slideTpl +=
+        '<slide :index="' +
+        index +
+        '"><a style="text-decoration: none;" class="redirect_url_call" target="_blank" rel="noopener noreferrer" href="' +
+        slide.url +
+        '"><img src="' + slide.image + '" style="width:100%; height:'+height+'px" /></a></slide>';
+      console.log(slide.image)
+    });
+
+    new Vue({
+      el: "#flip-slider-" + key_index,
+      components: {
+        "carousel-3d": window["carousel-3d"].Carousel3d,
+        slide: window["carousel-3d"].Slide,
+      },
+      template:
+        '<carousel-3d :height="'+height+'" :controls-visible="true" :inverse-scaling="1500" :perspective="150" :space="600" :width="600"  :autoplay-timeout="'+interval+'" :autoplay="'+position+'">' +
+        slideTpl +
+        "</carousel-3d>",
+    });
+  }, 200);
+});
+</script>
+<% } %>
