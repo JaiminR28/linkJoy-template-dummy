@@ -30,7 +30,7 @@
 
   <script>
     $(document).ready(function() {
-      if (contentAgeLimit === 1 || contentAgeLimit === 18 || contentAgeLimit === 21 || contentAgeLimit === 25) {
+      if ("<%= content_age_limit  %>" === 1 || "<%=  content_age_limit %>" === 18 || "<%=  content_age_limit %>" === 21 || "<%=  content_age_limit %>" === 25) {
         $('.section-init').hide();
         $('.sensitive-age-modal').show();
       } else {
@@ -175,7 +175,9 @@
         <!--End messenger block code -->
 
         <!--Start support form -->
+        <!-- TODO : Jaimin - do look at it during the testing -->
         <%- include('page-builder/support-form-section.ejs', {
+          currentUrl: currentUrl,
           payment_integration_data : payment_integration_data,
           blockHideOrShowWithSchedule : blockHideOrShowWithSchedule,
           key : key,

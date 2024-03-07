@@ -66,14 +66,14 @@
 
         <% } else if (pagebuilder_body['module_data']['payment_mode'] === 'Stripe') { %>
         <button type="button" data-order='{
-          "page_builder_id": "<%= page_builder_id || '' %>",
-          "form_id": "<%= pagebuilder_body.id || '' %>",
+          "page_builder_id": <%= page_builder_id || '' %>,
+          "form_id": <%= pagebuilder_body.id || '' %>,
           "type": "Stripe",
           "amount": "<%= pagebuilder_body.module_data.unit_price.value || 0 %>",
           "currency": "USD",
           "description": "<%= pagebuilder_body.module_data.buy_desc.value ? stripTags(pagebuilder_body.module_data.buy_desc.value) : '' %>",
-          "cancel_url": "<%= url().current() %>?session_id={CHECKOUT_SESSION_ID}&page_builder_id=<%= page_builder_id || '' %>&form_id=<%= pagebuilder_body.id || '' %>&type=Stripe",
-          "success_url": "<%= url().current() %>?session_id={CHECKOUT_SESSION_ID}&page_builder_id=<%= page_builder_id || '' %>&form_id=<%= pagebuilder_body.id || '' %>&success_redirect_url=<%= pagebuilder_body.module_data.support_success_url.value || '' %>&type=Stripe"
+          "cancel_url": "<%= currentUrl %>?session_id={CHECKOUT_SESSION_ID}&page_builder_id=<%= page_builder_id || '' %>&form_id=<%= pagebuilder_body.id || '' %>&type=Stripe",
+          "success_url": "<%= currentUrl %>?session_id={CHECKOUT_SESSION_ID}&page_builder_id=<%= page_builder_id || '' %>&form_id=<%= pagebuilder_body.id || '' %>&success_redirect_url=<%= pagebuilder_body.module_data.support_success_url.value || '' %>&type=Stripe"
         }' style="width:100%;" class="stripe-payment-btn-init payment-btn el-button el-button--primary font-weight-normal text-decoration-none">
           <span class="remove-margin text-wrap">
             <%- pagebuilder_body.module_data.button.value || '' %>
