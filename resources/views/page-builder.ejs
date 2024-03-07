@@ -130,7 +130,12 @@
         <!--End instagram feed code -->
 
         <!--Start youtube videos code -->
-        <!-- TODO: jaimin - ('page-builder.youtube-video-section' ) Yet to be created -->
+        <%- include('page-builder/youtube-video-section.ejs', {
+                useragent : useragent,
+                            blockHideOrShowWithSchedule : blockHideOrShowWithSchedule,
+                            giveDeepLinkUrl : giveDeepLinkUrl,
+                            key : key,
+                            pagebuilder_body : pagebuilder_body}) %>
         <!--End  youtube videos code -->
 
         <!--Start medium blog -->
@@ -142,7 +147,10 @@
         <!--End medium blog -->
 
         <!--Start Video Player -->
-        <!-- TODO: jaimin - ('page-builder.video-player-section' ) Yet to be created -->
+        <%- include('page-builder/video-player-section.ejs', {
+                            blockHideOrShowWithSchedule : blockHideOrShowWithSchedule,
+                            key : key,
+                            pagebuilder_body : pagebuilder_body}) %>
         <!--End Video Player -->
 
         <!--Start delimiter code -->

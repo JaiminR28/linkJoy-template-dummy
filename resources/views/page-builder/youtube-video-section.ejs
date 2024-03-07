@@ -1,0 +1,28 @@
+<% if (pagebuilder_body.module_type === 'youtube_video') { %>
+<% if (blockHideOrShowWithSchedule(pagebuilder_body.module_type, pagebuilder_body.is_hidden, pagebuilder_body.is_scheduled, pagebuilder_body.scheduled_start_date, pagebuilder_body.scheduled_end_date)) { %>
+<div class="subtitle-init margin-bottom-60">
+  <div class="top">
+    <div class="subtitle-row <%= pagebuilder_body.animate ? pagebuilder_body.animate : '' %>">
+      <div>
+        <span style="margin-bottom: 12px;">
+          <%- pagebuilder_body.module_data.title ? pagebuilder_body.module_data.title : '' %>
+        </span>
+      </div>
+      <% var layout = pagebuilder_body.layout_type ? pagebuilder_body.layout_type : 1; %>
+      <% var channel_id = pagebuilder_body.module_data.url ? giveDeepLinkUrl(useragent, pagebuilder_body.module_data.url) : ""; %>
+      <input type="hidden" id="next_url<%= key %>">
+      <input type="hidden" id="load_first<%= key %>">
+      <script>
+        $(document).ready(function(){
+          var youtube_layout_type = "<%= layout %>";
+          var channel_id = "<%= channel_id %>";
+          var key_index = "<%= key %>";
+          load_youtube_videos(youtube_layout_type,channel_id,key_index);
+        });
+      </script>
+      <div class="insta-row m-auto pagebuilder-link" id="youtube-videos-load<%= key %>"></div>
+    </div>
+  </div>
+</div>
+<% } %>
+<% } %>
