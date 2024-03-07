@@ -1,0 +1,79 @@
+<% if (pagebuilder_body.module_type === 'video_player') { %>
+<% if (blockHideOrShowWithSchedule(pagebuilder_body.module_type, pagebuilder_body.is_hidden, pagebuilder_body.is_scheduled, pagebuilder_body.scheduled_start_date, pagebuilder_body.scheduled_end_date)) { %>
+<div class="subtitle-init margin-bottom-60">
+    <div class="top">
+        <div class="subtitle-row">
+            <div>
+                <span style="margin-bottom: 12px;">
+                    <%- pagebuilder_body.title ? pagebuilder_body.title : '' %>
+                </span>
+            </div>
+            <% if (pagebuilder_body.module_data.embeddedUrl) { %>
+            <div class="insta-row m-auto pagebuilder-link embed-responsive embed-responsive-16by9 <%= pagebuilder_body.animate ? pagebuilder_body.animate : '' %>">
+                <% if (pagebuilder_body.module_data.type === 'youTube' || pagebuilder_body.module_data.type === 'vimeo') { %>
+                <iframe
+                    width="<%= pagebuilder_body.module_data.width ? pagebuilder_body.module_data.width + '%' : '' %>"
+                    height="<%= pagebuilder_body.module_data.height ? pagebuilder_body.module_data.height : '' %>"
+                    class="embed-responsive-item rounded" src="<%= pagebuilder_body.module_data.embeddedUrl && pagebuilder_body.module_data.embeddedUrl.includes('https://') ?
+                                            pagebuilder_body.module_data.embeddedUrl
+                                            + '?autoplay=' + (pagebuilder_body.module_data.autoplay ? 1 : 0)
+                                            + '&controls=' + (pagebuilder_body.module_data.controls ? 1 : 0) : '' %>"
+                    frameborder="0"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowfullscreen></iframe>
+                <% } else if (pagebuilder_body.module_data.type === 'drive') { %>
+                <iframe
+                    width="<%= pagebuilder_body.module_data.width ? pagebuilder_body.module_data.width + '%' : '' %>"
+                    height="<%= pagebuilder_body.module_data.height ? pagebuilder_body.module_data.height : '' %>"
+                    src="<%= pagebuilder_body.module_data.embeddedUrl && pagebuilder_body.module_data.embeddedUrl.includes('https://') ?
+                                        pagebuilder_body.module_data.embeddedUrl : '' %>" frameborder="0"
+                    allowfullscreen></iframe>
+                <% } else { %>
+                <% if (pagebuilder_body.module_data.autoplay === true && pagebuilder_body.module_data.controls === false) { %>
+                <video class="embed-responsive-item rounded"
+                    poster="<%= pagebuilder_body.module_data.poster ? pagebuilder_body.module_data.poster : '' %>"
+                    width="<%= pagebuilder_body.module_data.width ? pagebuilder_body.module_data.width + '%' : '' %>"
+                    height="<%= pagebuilder_body.module_data.height ? pagebuilder_body.module_data.height : '' %>"
+                    muted autoplay>
+                    <source src="<%= pagebuilder_body.module_data.embeddedUrl ?
+                                pagebuilder_body.module_data.embeddedUrl : '' %>"
+                        type="<%= pagebuilder_body.module_data.type %>" />
+                </video>
+                <% } else if (pagebuilder_body.module_data.controls === true && pagebuilder_body.module_data.autoplay === false) { %>
+                <video class="embed-responsive-item rounded"
+                    poster="<%= pagebuilder_body.module_data.poster ? pagebuilder_body.module_data.poster : '' %>"
+                    width="<%= pagebuilder_body.module_data.width ? pagebuilder_body.module_data.width + '%' : '' %>"
+                    height="<%= pagebuilder_body.module_data.height ? pagebuilder_body.module_data.height : '' %>"
+                    muted controls>
+                    <source src="<%= pagebuilder_body.module_data.embeddedUrl ?
+                                pagebuilder_body.module_data.embeddedUrl : '' %>"
+                        type="<%= pagebuilder_body.module_data.type %>" />
+                </video>
+                <% } else if (pagebuilder_body.module_data.autoplay === true && pagebuilder_body.module_data.controls === true) { %>
+                <video class="embed-responsive-item rounded"
+                    poster="<%= pagebuilder_body.module_data.poster ? pagebuilder_body.module_data.poster : '' %>"
+                    width="<%= pagebuilder_body.module_data.width ? pagebuilder_body.module_data.width + '%' : '' %>"
+                    height="<%= pagebuilder_body.module_data.height ? pagebuilder_body.module_data.height : '' %>"
+                    muted controls autoplay>
+                    <source src="<%= pagebuilder_body.module_data.embeddedUrl ?
+                                pagebuilder_body.module_data.embeddedUrl : '' %>"
+                        type="<%= pagebuilder_body.module_data.type %>" />
+                </video>
+                <% } else { %>
+                <video class="embed-responsive-item rounded"
+                    poster="<%= pagebuilder_body.module_data.poster ? pagebuilder_body.module_data.poster : '' %>"
+                    width="<%= pagebuilder_body.module_data.width ? pagebuilder_body.module_data.width + '%' : '' %>"
+                    height="<%= pagebuilder_body.module_data.height ? pagebuilder_body.module_data.height : '' %>">
+                    <source src="<%= pagebuilder_body.module_data.embeddedUrl ?
+                                pagebuilder_body.module_data.embeddedUrl : '' %>"
+                        type="<%= pagebuilder_body.module_data.type %>" />
+                </video>
+                <% } %>
+                <% } %>
+            </div>
+            <% } %>
+        </div>
+    </div>
+</div>
+<% } %>
+<% } %>
