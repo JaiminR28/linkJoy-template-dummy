@@ -120,7 +120,9 @@
         <!--End i-Frame code -->
 
         <!--Start social link code -->
-        <!-- TODO: jaimin - ('page-builder.social-links-section' ) Yet to be created -->
+        <%- include('page-builder/social-links-section.ejs', {useragent : useragent, pagebuilderSocialLink : pagebuilderSocialLink, blockHideOrShowWithSchedule : blockHideOrShowWithSchedule,
+                            key : key,
+                            pagebuilder_body : pagebuilder_body}) %>
         <!--End social link code -->
 
         <!--Start instagram feed code -->
@@ -132,7 +134,11 @@
         <!--End  youtube videos code -->
 
         <!--Start medium blog -->
-        <!-- TODO: jaimin - ('page-builder.medium-feed-section' ) Yet to be created -->
+        <%- include('page-builder/medium-feed-section.ejs', {
+            blockHideOrShowWithSchedule : blockHideOrShowWithSchedule,
+            key : key,
+            pagebuilder_body : pagebuilder_body
+        }) %>
         <!--End medium blog -->
 
         <!--Start Video Player -->
@@ -164,11 +170,15 @@
         <!--End support form -->
 
         <!--Start button text code -->
-        <!-- TODO: jaimin - ('page-builder.button-text-group-section' ) Yet to be created -->
+        <%- include('page-builder/button-text-group-section.ejs', {
+          useragent,
+          giveDeepLinkUrl : giveDeepLinkUrl,
+                            blockHideOrShowWithSchedule : blockHideOrShowWithSchedule,
+                            key : key,
+                            pagebuilder_body : pagebuilder_body}) %>
         <!--End button text code -->
 
         <!--Start Add to Contacts code -->
-        <!-- TODO: jaimin - ('page-builder.add-to-contacts-section' ) Yet to be created -->
         <%- include('page-builder/add-to-contacts-section.ejs', {
                             blockHideOrShowWithSchedule : blockHideOrShowWithSchedule,
                             key : key,
@@ -176,7 +186,10 @@
         <!--End Add to Contacts code -->
 
         <!--Start Html Code -->
-        <!-- TODO: jaimin - ('page-builder.html-block-section' ) Yet to be created -->
+        <%- include('page-builder/html-block-section.ejs', {
+                            blockHideOrShowWithSchedule : blockHideOrShowWithSchedule,
+                            key : key,
+                            pagebuilder_body : pagebuilder_body}) %>
         <!--End Html Code -->
         <% }) %>
         <% } %>

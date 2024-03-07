@@ -1,0 +1,29 @@
+<% if (pagebuilder_body['module_type'] === 'html_block') { %>
+<% if (blockHideOrShowWithSchedule(
+    pagebuilder_body['module_type'],
+    pagebuilder_body['is_hidden'],
+    pagebuilder_body['is_scheduled'],
+    pagebuilder_body['scheduled_start_date'],
+    pagebuilder_body['scheduled_end_date'])) { %>
+<div class="subtitle-init margin-bottom-60">
+  <div class="top">
+    <div class="subtitle-row w-100">
+      <div class="column col-2 d-none"></div>
+      <div class="column m-auto">
+        <div>
+          <span style="margin-bottom: 12px;">
+            <%-  pagebuilder_body['title'] ? pagebuilder_body['title'] : '' %>
+          </span>
+        </div>
+        <% if (pagebuilder_body['module_data']['content']) { %>
+        <div class="<%= pagebuilder_body['animate']  ? pagebuilder_body['animate'] : ''%>">
+          <%- pagebuilder_body['module_data']['content'] %>
+        </div>
+        <% } %>
+      </div>
+      <div class="column col-2 d-none"></div>
+    </div>
+  </div>
+</div>
+<% } %>
+<% } %>

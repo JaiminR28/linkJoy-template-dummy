@@ -1,0 +1,28 @@
+<% if (pagebuilder_body['module_type'] == 'medium_feed') { %>
+<% if (blockHideOrShowWithSchedule(pagebuilder_body['module_type'],pagebuilder_body['is_hidden'],pagebuilder_body['is_scheduled'],pagebuilder_body['scheduled_start_date'],pagebuilder_body['scheduled_end_date'])) { %>
+<div class="subtitle-init margin-bottom-60">
+  <div class="top">
+    <div class="subtitle-row <%= pagebuilder_body['animate']?$pagebuilder_body['animate']:''; %> ">
+      <div>
+        <span style="margin-bottom: 12px;">
+          <%- pagebuilder_body['module_data']['title'] ? pagebuilder_body['module_data']['title'] : '' %>
+        </span>
+      </div>
+      <% let layout = pagebuilder_body['layout_type'] ? pagebuilder_body['layout_type']  : 1 %>
+      <% let user_name = pagebuilder_body['module_data']['user_name'] ? pagebuilder_body['module_data']['user_name']  : ''%>
+      <input type="hidden" id="next_url<%=  key  %>">
+      <input type="hidden" id="load_first<%=  key  %>">
+      <script>
+        $(document).ready(function() {
+          var medium_layout_type = "<%= layout %>";
+          var user_name = "<%= user_name %>";
+          var key_index = "<%= key %>";
+          load_medium_blog(medium_layout_type, user_name, key_index);
+        });
+      </script>
+      <div class="insta-row m-auto pagebuilder-link" id="medium-blog-load<%=key%>"></div>
+    </div>
+  </div>
+</div>
+<% } %>
+<% } %>

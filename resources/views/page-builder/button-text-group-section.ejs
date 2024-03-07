@@ -1,0 +1,93 @@
+<% if (pagebuilder_body['module_type'] == 'button-text-group' && pagebuilder_body['module_data'].length > 0) { %>
+<% if (blockHideOrShowWithSchedule(pagebuilder_body['module_type'],pagebuilder_body['is_hidden'],pagebuilder_body['is_scheduled'],pagebuilder_body['scheduled_start_date'],pagebuilder_body['scheduled_end_date'])) { %>
+<% 
+  let noOfColumnsClass = '';
+  if (pagebuilder_body.no_of_columns === 2) {
+    noOfColumnsClass = "button-group-grid-layout-2";
+  } else if (pagebuilder_body.no_of_columns === 3) {
+    noOfColumnsClass = "button-group-grid-layout-3";
+  } else if (pagebuilder_body.no_of_columns === 4) {
+    noOfColumnsClass = "button-group-grid-layout-4";
+  }
+%>
+<div class="subtitle-init margin-bottom-60 button-group-section">
+  <% if (pagebuilder_body['layout_type'] === 1 && pagebuilder_body['module_data'].length > 0) { %>
+  <div class="top">
+    <div class="subtitle-row">
+      <div class="column col-2 d-none"></div>
+      <div class="column col-12 w-100 mx-auto px-0 <%= noOfColumnsClass || '' %>">
+        <% pagebuilder_body['module_data'].forEach((social_data) => { %>
+        <a href="javascript:void(0)" data-href=" <%= social_data['url'] ? giveDeepLinkUrl(useragent, social_data['url']):'#' %>" class="redirect_url_call el-button el-button--primary font-weight-normal text-decoration-none w-100 <%=  social_data['animation'] ?social_data['animation']:'';  %>">
+          <span class="remove-margin text-wrap">
+            <%- social_data['title'] ? social_data['title'] : ""%>
+          </span>
+        </a>
+        <% }) %>
+      </div>
+      <div class="column col-2 d-none"></div>
+    </div>
+  </div>
+
+  <% } else if (pagebuilder_body['layout_type'] == 2 && pagebuilder_body['module_data'].length >0) { %>
+  <div class="top margin-bottom-60">
+    <div class="subtitle-row">
+      <div class="column col-2 d-none"></div>
+      <div class="column col-12 w-100 mx-auto px-0 <%= noOfColumnsClass || '' %>">
+        <% pagebuilder_body['module_data'].forEach((social_data) => { %>
+        <a href="javascript:void(0)" data-href="<%= social_data.url ? giveDeepLinkUrl(useragent, social_data.url) : '#' %>" class="redirect_url_call text-decoration-none <%= social_data.animation || '' %>">
+          <div class="button-text-row el-button p-0 mx-auto">
+            <img class="button-text-row__image-third rounded-top" src="<%= social_data['image'] ? social_data['image'] : '' %>" />
+            <div class="button-text-row__text-fourth rounded-bottom">
+              <span class="remove-margin text-wrap">
+                <%- social_data['title'] ? social_data['title'] : "" %>
+              </span>
+            </div>
+          </div>
+        </a>
+        <% }) %>
+      </div>
+      <div class="column col-2 d-none"></div>
+    </div>
+  </div>
+  <% } else if (pagebuilder_body.layout_type === 3 && pagebuilder_body.module_data.length > 0) { %>
+  <div class="top margin-bottom-60">
+    <div class="subtitle-row">
+      <div class="column col-2 d-none"></div>
+      <div class="column col-12 w-100 mx-auto px-0 <%= noOfColumnsClass || '' %>">
+        <% pagebuilder_body.module_data.forEach(function(social_data) { %>
+        <a href="javascript:void(0)" data-href="<%= social_data.url ? giveDeepLinkUrl(useragent, social_data.url) : '#' %>" class="redirect_url_call text-decoration-none <%= social_data.animation || '' %>">
+          <div class="button-text-row el-button p-0 mx-auto">
+            <img class="button-text-row__image-third rounded" src="<%= social_data.image || '' %>" />
+          </div>
+        </a>
+        <% }); %>
+      </div>
+      <div class="column col-2 d-none"></div>
+    </div>
+  </div>
+
+  <% } else if (pagebuilder_body.layout_type === 4 && pagebuilder_body.module_data.length > 0) { %>
+  <div class="top margin-bottom-60">
+    <div class="subtitle-row">
+      <div class="column col-2 d-none"></div>
+      <div class="column col-12 w-100 mx-auto px-0 <%= noOfColumnsClass || '' %>">
+        <% pagebuilder_body.module_data.forEach(function(social_data) { %>
+        <a href="javascript:void(0)" class="redirect_url_call <%= social_data.animation || '' %>" data-href="<%= social_data.url ? giveDeepLinkUrl(useragent, social_data.url) : '#' %>">
+          <div class="button-text-row el-button p-0 mx-auto">
+            <img class="button-text-row__image-third rounded" src="<%= social_data.image || '' %>" />
+            <div class="button-text-row__text-third rounded d-flex flex-column justify-content-center align-items-center">
+              <span class="remove-margin px-3 text-wrap">
+                <%= social_data.title || '' %>
+              </span>
+            </div>
+          </div>
+        </a>
+        <% }); %>
+      </div>
+      <div class="column col-2 d-none"></div>
+    </div>
+  </div>
+  <% } %>
+</div>
+<% } %>
+<% } %>

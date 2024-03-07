@@ -1,0 +1,33 @@
+<% if (pagebuilder_body['module_type'] === 'support') { %>
+<% if (blockHideOrShowWithSchedule(pagebuilder_body['module_type'],pagebuilder_body['is_hidden'],pagebuilder_body['is_scheduled'],pagebuilder_body['scheduled_start_date'],pagebuilder_body['scheduled_end_date']) && pagebuilder_body['is_enable'] === true ) { %>
+<div class="subtitle-init margin-bottom-60 m-auto" style="width: 100%;">
+  <div class="top">
+    <div class="subtitle-row">
+      <form action="" class="class=" el-form render-subscribe-form support-form-<%= pagebuilder_body['module_data']['payment_mode'] ? pagebuilder_body['module_data']['payment_mode'] : '' %> style="margin-top: 20px;background:<%= pagebuilder_body['background_color'] ? pagebuilder_body['background_color'] : '#979797'; %> background:<%=  (pagebuilder_body['layout_type'] == 0)?'none;':'';  %>">
+        <input type="hidden" name="id" value="<%=  page_builder_id  %>">
+
+        <% if (pagebuilder_body['layout_type'] && pagebuilder_body['layout_type'] === 1) { %>
+        <span style="margin-bottom: 10px;text-align:center">
+          <%-  pagebuilder_body['module_data']['heading']['value'] ? pagebuilder_body['module_data']['heading']['value'] : '' %>
+        </span>
+        <span style="text-align:center">
+          <%= pagebuilder_body.module_data.support_desc.value || '' %>
+        </span>
+
+        <div style="display:inline-flex;">
+          <span style="text-align:center">
+            <%= pagebuilder_body.module_data.buy_desc.value || '' %>
+          </span>
+
+          <h4 style="text-align:center;font-weight:bold;">
+            &nbsp;&nbsp;<%= pagebuilder_body.module_data.unit_price.value ? '$' + pagebuilder_body.module_data.unit_price.value : '' %>
+          </h4>
+        </div>
+        <% } %>
+
+      </form>
+    </div>
+  </div>
+</div>
+<% } %>
+<% } %>

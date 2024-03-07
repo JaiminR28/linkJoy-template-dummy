@@ -1,24 +1,24 @@
 <% if (pagebuilder_body['module_type'] === 'social_links') { %>
 <% if (blockHideOrShowWithSchedule(
-        $pagebuilder_body['module_type'],
-        $pagebuilder_body['is_hidden'],
-        $pagebuilder_body['is_scheduled'],
-        $pagebuilder_body['scheduled_start_date'],
-        $pagebuilder_body['scheduled_end_date'])) { %>
+        pagebuilder_body['module_type'],
+        pagebuilder_body['is_hidden'],
+        pagebuilder_body['is_scheduled'],
+        pagebuilder_body['scheduled_start_date'],
+        pagebuilder_body['scheduled_end_date'])) { %>
 <div class="subtitle-init margin-bottom-60 <%= pagebuilder_body['animate'] ? pagebuilder_body['animate'] : '' %> ">
   <div class="top">
     <div class="subtitle-row">
       <div class="column col-12">
         <% if (pagebuilder_body['module_data'] && pagebuilder_body['module_data'].length !== 0) { %>
         <% pagebuilder_body['module_data'].forEach((social_data) => { %>
-        <% if (social_data['link'] != '') { %>
+        <% if (social_data['link'] ) { %>
         <% let type = social_data['type'] ? social_data['type']:""  %>
         <% let page_id = social_data['link'] ? social_data['link']:"" %>
         <% let text = social_data['text'] ? social_data['text']:"" %>
         <div class="cursor-pointer render-social " style="width: 30px; display: contents;">
           <span class="left-box-social" style="margin-right: 11px;">
-            <a style="text-decoration: none;" href="javascript:void(0)" class="redirect_url_call" data-href="<%= page_id ? pagebuilderSocialLink(type, page_id, text) %>">
-              <img src=`<%= social_data['icon'] ? sprite/svg/${social_data['icon']}.svg %> : '' ` />
+            <a style="text-decoration: none;" href="javascript:void(0)" class="redirect_url_call" data-href="<%= page_id ? pagebuilderSocialLink(useragent,type, page_id, text) : '#' %>">
+              <img src="<%= 'sprite/svg/' + social_data.icon + '.svg' %>" />
             </a>
           </span>
         </div>
