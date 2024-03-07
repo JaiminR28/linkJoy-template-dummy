@@ -1,0 +1,47 @@
+<% var layout = pagebuilder_body.layout_type ? pagebuilder_body.layout_type : 1; %>
+<% if (pagebuilder_body.module_data && pagebuilder_body.module_data.length > 0) { %>
+<div style="display: inline-block; width:100%!important">
+  <div id="slider-load-<%= key %>" class="splide js-splide-primary p-splide p-splide--primary" data-splide='{
+    "type": "loop",
+    "rewind": true,
+    "autoplay": "<%= pagebuilder_body.position ? pagebuilder_body.position : false %>",
+    "interval":<%= pagebuilder_body.slide_transition ? pagebuilder_body.slide_transition * 1000 : "" %>,
+    "height": "<%= pagebuilder_body.height ? pagebuilder_body.height + "px" : "auto" %>",
+    "width": "100%",
+    "arrows":false,
+    "pagination":false
+    }'>
+        <div class="splide__track">
+            <ul class="splide__list">
+                <% pagebuilder_body.module_data.forEach(function(slider) { %>
+                <% if (slider.image != "") { %>
+                <li class="splide__slide p-splide__slide">
+                    <a style="text-decoration: none;" target="_blank" rel="noopener noreferrer" class="redirect_url_call"
+                        href="<%= slider.url %>">
+                        <img src="<%= slider.image %>"
+                            style="width:100%;height:<%= pagebuilder_body.height ? pagebuilder_body.height + 'px' : 'auto' %>" />
+                    </a>
+                </li>
+                <% } %>
+                <% }); %>
+            </ul>
+        </div>
+    </div>
+
+    <div id="slider-load-thumbnail-<%= key %>"
+        class="splide js-splide-secondary p-splide p-splide--secondary"
+        data-splide='{"arrows":false, "autoplay": "<%= pagebuilder_body.position ? pagebuilder_body.position : false %>","type": "loop","rewind":true,"fixedWidth":60,"fixedHeight":60,"isNavigation":true,"gap":20,"focus":"center","pagination":false,"cover":false}'>
+        <div class="splide__track">
+            <ul class="splide__list">
+                <% pagebuilder_body.module_data.forEach(function(slider) { %>
+                <% if (slider.image != "") { %>
+                <li class="splide__slide p-splide__slide">
+                    <img src="<%= slider.image %>" style="width:60px;height:60px;" />
+                </li>
+                <% } %>
+                <% }); %>
+            </ul>
+        </div>
+    </div>
+</div>
+<% } %>

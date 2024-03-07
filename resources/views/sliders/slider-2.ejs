@@ -1,0 +1,40 @@
+<% var layout = pagebuilder_body.layout_type ? pagebuilder_body.layout_type : 1; %>
+<% if (pagebuilder_body.module_data && pagebuilder_body.module_data.length > 0) { %>
+<div style="display: inline-block; width:100%!important">
+  <div id="slider-load-<%= key %>" class="splide js-splide p-splide" data-splide='{
+   "perPage":3,
+   "type": "loop",
+   "rewind": true,
+   "autoplay": "<%= pagebuilder_body.position ? pagebuilder_body.position : false %>",
+   "interval":<%= pagebuilder_body.slide_transition ? pagebuilder_body.slide_transition * 1000 : "" %>,
+   "height": "<%= pagebuilder_body.height ? pagebuilder_body.height + "px" : "auto" %>",
+   "width": "100%",
+   "arrows": true,
+   "focus":"center",
+   "gap": 5
+   }'>
+      <div class="splide__arrows p-splide__arrows">
+         <button class="splide__arrow p-splide__arrow splide__arrow--prev p-splide__arrow--prev">
+            <span class="spi-angle-left"></span></button><button
+            class="splide__arrow p-splide__arrow splide__arrow--next p-splide__arrow--next">
+            <span class="spi-angle-right"></span>
+         </button>
+      </div>
+      <div class="splide__track">
+         <ul class="splide__list">
+            <% pagebuilder_body.module_data.forEach(function(slider) { %>
+            <% if (slider.image != "") { %>
+            <li class="splide__slide p-splide__slide">
+               <a style="text-decoration: none;" target="_blank" rel="noopener noreferrer" class="redirect_url_call"
+                  href="<%= slider.url %>">
+                  <img src="<%= slider.image %>"
+                     style="width:100%;height:<%= pagebuilder_body.height ? pagebuilder_body.height + 'px' : 'auto' %>" />
+               </a>
+            </li>
+            <% } %>
+            <% }); %>
+         </ul>
+      </div>
+   </div>
+</div>
+<% } %>
