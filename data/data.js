@@ -5,6 +5,7 @@ const {
   getValidUrl,
   stripTags,
   pagebuilderSocialLink,
+  pagebuilderDelimiterSvg,
 } = require("../helperFile");
 
 exports.data = {
@@ -16,6 +17,7 @@ exports.data = {
   blockHideOrShowWithSchedule,
   stripTags,
   pagebuilderSocialLink,
+  pagebuilderDelimiterSvg,
   useragent: {
     isYaBrowser: false,
     isAuthoritative: true,
@@ -1234,7 +1236,7 @@ exports.data = {
         '<h1><strong style="color: rgb(135, 206, 235);">hell0 this is image carousel section</strong><span class="ql-emojiblot" data-name="boy">\ufeff<span contenteditable="false"><span class="ap ap-boy">👦</span></span>\ufeff</span></h1>',
       name: "Image Carousel",
       icon: "images-outline",
-      layout_type: 6,
+      layout_type: 5,
       is_hidden: false,
       is_scheduled: false,
       scheduled_start_date: null,
@@ -1261,6 +1263,29 @@ exports.data = {
         },
       ],
       value: "300",
+    },
+    {
+      id: 2,
+      position: 1,
+      module_type: "delimiter",
+      title: "",
+      name: "Delimiter",
+      icon: "code-slash-outline",
+      layout_type: 8,
+      is_hidden: false,
+      is_scheduled: false,
+      scheduled_start_date: null,
+      scheduled_end_date: {
+        start: "6:36 pm",
+        end: "6:41 pm",
+        timezone: "Asia/Calcutta",
+      },
+      module_data: {
+        is_type: false,
+        is_color: "#FF1F1F",
+        is_width: true,
+        is_edge: true,
+      },
     },
     {
       id: 89261,

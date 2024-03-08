@@ -1,0 +1,21 @@
+<% if (pagebuilder_body.module_type == 'delimiter') { %>
+<% if(blockHideOrShowWithSchedule(pagebuilder_body.module_type, pagebuilder_body.is_hidden, pagebuilder_body.is_scheduled, pagebuilder_body.scheduled_start_date, pagebuilder_body.scheduled_end_date)) { %>
+
+<div class="subtitle-init margin-bottom-60 m-auto" id="delimiter-render-<%= key %>">
+    <div class="delimiter-chooser delimiter-break subtitle-row" style="border:none; text-align: center;">
+        <div class="delimiter-break-inner" style="display: inline-block;">
+            <% if(pagebuilder_body.layout_type) { %>
+            <%- pagebuilder_body.layout_type > 1 ? pagebuilderDelimiterSvg(pagebuilder_body.layout_type) : '' %>
+            <script>
+                $(document).ready(function(){
+            var pagebuilder_body = '<%- JSON.stringify(pagebuilder_body) %>';
+            var key_index = "<%= key %>";
+            lineColorSet(pagebuilder_body,key_index);
+        });
+            </script>
+            <% } %>
+        </div>
+    </div>
+</div>
+<% } %>
+<% } %>
