@@ -1,0 +1,130 @@
+<% if (pagebuilder_body['module_type'] === 'email_sms_list') { %>
+<% if (blockHideOrShowWithSchedule(pagebuilder_body['module_type'],pagebuilder_body['is_hidden'],pagebuilder_body['is_scheduled'],pagebuilder_body['scheduled_start_date'],pagebuilder_body['scheduled_end_date'])
+&& pagebuilder_body['is_enable'] === true) { %>
+<div class="subtitle-init margin-bottom-60 m-auto" style="width: 100%;">
+  <div class="top">
+    <div class="subtitle-row <%=  pagebuilder_body['animate']?$pagebuilder_body['animate']:'';  %>">
+
+      <form class="el-form render-subscribe-form" id="subscribe-form-<%= key || '' %>" style="margin-top: 20px; background: <%= pagebuilder_body.background_color || '#979797' %>;">
+        <input type="hidden" name="id" value="<%= page_builder_id || '' %>">
+        <input type="hidden" name="form_id" value="<%= pagebuilder_body.id || '' %>">
+        <input type="hidden" name="function_type" value="NewSubscription">
+        <input type="hidden" name="function_name" value="Subscription Function">
+        <span style="margin-bottom: 10px; text-align: center;">
+          <%- pagebuilder_body.module_data.title || '' %>
+        </span>
+        <span style="text-align: center;">
+          <%- pagebuilder_body.module_data.description || '' %>
+        </span>
+
+        <h5 class="msg-init" id="msg-<%= key || '' %>"></h5>
+        <% if (pagebuilder_body['module_data']['name_arr']['active'] === 1) { %>
+        <div class="el-form-item">
+          <div class="el-form-item__content">
+            <div class="el-input">
+              <input type="<%= pagebuilder_body.module_data.name_arr.type || '' %>" autocomplete="off" placeholder="<%= pagebuilder_body.module_data.name_arr.value || pagebuilder_body.module_data.name_arr.placeholder || '' %>" class="el-input__inner" name="<%= pagebuilder_body.module_data.name_arr.name || '' %>" required="<%= pagebuilder_body.module_data.name_arr.required ? 'true' : 'false' %>">
+
+            </div>
+          </div>
+        </div>
+        <% } %>
+
+        <% if (pagebuilder_body['module_data']['email_arr']['active'] === 1) { %>
+        <div class="el-form-item">
+          <div class="el-form-item__content">
+            <div class="el-input">
+              <input type="<%= pagebuilder_body['module_data']['email_arr']['type'] ? pagebuilder_body['module_data']['email_arr']['type'] : '' %>" autocomplete="off" placeholder="<%= pagebuilder_body['module_data']['email_arr']['value'] ? pagebuilder_body['module_data']['email_arr']['value'] : pagebuilder_body['module_data']['email_arr']['placeholder']%>" class="el-input__inner" name="<%= pagebuilder_body.module_data.email_arr.name || '' %>" required="<%= pagebuilder_body.module_data.email_arr.required ? 'true' : 'false' %>">
+            </div>
+          </div>
+        </div>
+        <% } %>
+        <% if (pagebuilder_body.module_data.mobile_no_arr.active && pagebuilder_body.module_data.mobile_no_arr.active === 1) { %>
+        <div class="el-form-item">
+          <div class="el-form-item__content">
+            <div class="el-input">
+              <input type="<%= pagebuilder_body.module_data.mobile_no_arr.type || '' %>" autocomplete="off" placeholder="<%= pagebuilder_body.module_data.mobile_no_arr.value || pagebuilder_body.module_data.mobile_no_arr.placeholder || '' %>" class="el-input__inner" name="<%= pagebuilder_body.module_data.mobile_no_arr.name || '' %>" required="<%= pagebuilder_body.module_data.mobile_no_arr.required ? 'true' : 'false' %>">
+            </div>
+          </div>
+        </div>
+        <% } %>
+        <button type="submit" style="width: 100%;" class="el-button el-button--primary font-weight-normal text-decoration-none">
+          <span class="remove-margin text-wrap">
+            <%- pagebuilder_body['module_data']['submit_button'] || "" %>
+          </span>
+        </button>
+
+        <% if ((pagebuilder_body.module_data.custom_legal_info.active) &&
+       (pagebuilder_body.module_data.custom_legal_info.fields.legal_text.value)) { %>
+        <center style="font-size: 14px; margin-top: 12px;">
+          <a href="javascript:void(0)" data-href="<%= pagebuilder_body.module_data.custom_legal_info.fields.legal_url.value ? getValidURL(pagebuilder_body.module_data.custom_legal_info.fields.legal_url.value) : '#' %>" class="redirect_url_call" style="text-decoration: underline; color: #323232;">
+            <%= pagebuilder_body.module_data.custom_legal_info.fields.legal_text.value %>
+          </a>
+        </center>
+        <% } %>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script>
+  $(document).ready(function() {
+    $("#subscribe-form-<%= key || '' %>").submit(function(e) {
+      e.preventDefault();
+      let msg = "<%= pagebuilder_body.module_data.success_message || '' %>";
+
+      jQuery('.preloader-custom-gif').show();
+      jQuery('.preloader').show();
+      let formData = new FormData(this);
+      formData.append('_token', '{{ csrf_token() }}');
+      jQuery.ajax({
+        url: '<%= "/page-builder/new-subscribe" %>',
+        type: "POST",
+        contentType: "json",
+        data: formData,
+        contentType: false,
+        processData: false,
+        success: function(response) {
+          let data = response;
+          if (data.message) {
+            $('.preloader-custom-gif').hide();
+            $('.preloader').hide();
+            $("#msg-<%= key || '' %>").removeClass("error-msg");
+            $("#msg-<%= key || '' %>").removeClass("success-msg");
+            $("#msg-<%= key || '' %>").addClass("success-msg");
+            $("#msg-<%= key || '' %>").html(msg);
+            setTimeout(function() {
+              $("#msg-<%= key || '' %>").html("");
+            }, 3000);
+            $("#subscribe-form-<%= key || '' %>")[0].reset();
+          } else {
+            $('.preloader-custom-gif').hide();
+            $('.preloader').hide();
+            $("#msg-<%= key || '' %>").removeClass("error-msg");
+            $("#msg-<%= key || '' %>").removeClass("success-msg");
+            $("#msg-<%= key || '' %>").addClass("error-msg");
+            $("#msg-<%= key || '' %>").html("Something went wrong!");
+            setTimeout(function() {
+              $("#msg-<%= key || '' %>").html("");
+            }, 3000);
+            $("#subscribe-form-<%= key || '' %>")[0].reset();
+          }
+        },
+        error: function(jqXHR, exception) {
+          $('.preloader-custom-gif').hide();
+          $('.preloader').hide();
+          $("#msg-<%= key || '' %>").removeClass("error-msg");
+          $("#msg-<%= key || '' %>").removeClass("success-msg");
+          $("#msg-<%= key || '' %>").addClass("success-msg");
+          $("#msg-<%= key || '' %>").html(msg);
+          setTimeout(function() {
+            $("#msg-<%= key || '' %>").html("");
+          }, 3000);
+          $("#subscribe-form-<%= key || '' %>")[0].reset();
+        },
+      });
+    });
+  });
+</script>
+
+<% } %>
+<% } %>

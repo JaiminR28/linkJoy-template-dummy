@@ -9,6 +9,27 @@ const constants = {
   },
 };
 
+const pagebuilderDelimiterSvg = (key) => {
+	const pagebuilderDelimiterSvg = {
+		2: "",
+		3: "<img class='svg' src='sprite/svg/chevron-up-outline.svg' height='25px'>",
+		4: "<img class='svg' src='sprite/svg/star-outline.svg' height='25px'>",
+		5: "<img class='svg' src='sprite/svg/ellipse-outline.svg' height='25px'>",
+		6: "<img class='svg' src='sprite/svg/analytics-outline-1.svg' height='25px'>",
+		7: "<img class='svg' src='sprite/svg/checkmark-circle-outline.svg' height='25px'>",
+		8: "<img class='svg' src='sprite/svg/eye-outline.svg' height='25px'>",
+		9: "<img class='svg' src='sprite/svg/flash-outline.svg' height='25px'>",
+		10: "<img class='svg' src='sprite/svg/sync-outline.svg' height='25px'>",
+		11: "<img class='svg' src='sprite/svg/remove-circle-outline.svg' height='25px'>",
+		12: "<img class='svg' src='sprite/svg/sunny-outline.svg' height='25px'>",
+		13: "<img class='svg' src='sprite/svg/snow-outline.svg' height='25px'>",
+	};
+
+	return pagebuilderDelimiterSvg[key]
+		? `<span>${pagebuilderDelimiterSvg[key]}</span>`
+		: "";
+};
+
 const pagebuilderSocialLink = (useragent, type, page_id, text = "") => {
   const deviceInfo = useragent;
 
@@ -323,11 +344,11 @@ const pagebuilderDelimiterSvg = (key) => {
 };
 
 module.exports = {
-  pagebuilderThemes,
-  blockHideOrShowWithSchedule,
-  getValidUrl,
-  giveDeepLinkUrl,
-  stripTags,
-  pagebuilderSocialLink,
-  pagebuilderDelimiterSvg,
+	pagebuilderThemes,
+	blockHideOrShowWithSchedule,
+	getValidUrl,
+	giveDeepLinkUrl,
+	stripTags,
+	pagebuilderSocialLink,
+	pagebuilderDelimiterSvg,
 };

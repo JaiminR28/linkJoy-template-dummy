@@ -1,0 +1,29 @@
+<% if (pagebuilder_body['module_type'] === 'dynamic_feed') { %>
+<% if (blockHideOrShowWithSchedule(pagebuilder_body['module_type'],pagebuilder_body['is_hidden'],pagebuilder_body['is_scheduled'],pagebuilder_body['scheduled_start_date'],pagebuilder_body['scheduled_end_date'])) { %>
+<div class="subtitle-init margin-bottom-60">
+  <div class="top">
+    <div class="subtitle-row">
+      <div>
+        <span style="margin-bottom: 12px;">
+          <%- pagebuilder_body.module_data.title || '' %>
+        </span>
+      </div>
+      <% let layout = pagebuilder_body.layout_type || 1; %>
+      <% let user_name = pagebuilder_body.module_data.url || ''; %>
+      <input type="hidden" id="next_url<%= key || '' %>">
+      <input type="hidden" id="load_first<%= key || '' %>">
+      <script>
+        document.addEventListener('DOMContentLoaded', function() {
+          var dynamicLayoutType = "<%= layout %>";
+          var userName = "<%= user_name %>";
+          var keyIndex = "<%= key || '' %>";
+          loadDynamicBlog(dynamicLayoutType, userName, keyIndex);
+        });
+      </script>
+      <div class="insta-row m-auto pagebuilder-link" id="dynamic-blog-load<%= key || '' %>"></div>
+    </div>
+  </div>
+</div>
+
+<% } %>
+<% } %>
