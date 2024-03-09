@@ -1534,5 +1534,17 @@ exports.data = {
 		id: 79,
 		uuid: "7e924719-40bd-488e-b8bf-382e38585bac",
 		is_active: 1,
+	},analyticsData:{
+		page_builder_id: 1234,
+		ip_address : '127.0.0.0',
+        country : 'United States',
+        city : 'New Haven',
+        state: 'CT',
+        timezone : 'America/New_York',
+        device : 'NA',
+        platform : true,
+        browser : 'USD',
+		browser_version: 'hfh',
+		referrer:'jfj '
 	},
 };

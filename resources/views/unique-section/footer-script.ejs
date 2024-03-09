@@ -1,0 +1,36 @@
+<script>
+   $(document).ready(function() {
+  $("img.svg").each(function() {
+    var $img = $(this);
+    var imgID = $img.attr("id");
+    var imgClass = $img.attr("class");
+    var imgURL = $img.attr("src");
+    $.get(
+      imgURL,
+      function(data) {
+        var $svg = $(data).find("svg");
+        if (typeof imgID !== "undefined") {
+          $svg = $svg.attr("id", imgID);
+        }
+        if (typeof imgClass !== "undefined") {
+          $svg = $svg.attr("class", imgClass + " replaced-svg");
+        }
+        $svg = $svg.removeAttr("xmlns:a");
+        $img.replaceWith($svg);
+      },
+      "xml"
+    );
+  });
+  $(".redirect_url_call").click(function(event) {
+    if ($(this).attr("data-href") != "#") {
+      window.open($(this).attr("data-href"));
+    }
+  });
+});
+
+function imageNotLoad(obj) {
+  $(obj).attr("src", "/../images/no_image.png");
+}
+
+
+</script>

@@ -242,16 +242,22 @@
 
 </body>
 
-<!-- Start Footer Script With Analytics Section -->
-<!-- TODO: jaimin - ('unique-section.footer-analytics' ) Yet to be created -->
-<!-- End Footer Script With Analytics Section -->
+ <!-- Start Footer Script With Analytics Section -->
+  <!-- TODO: jaimin - ('unique-section.footer-analytics' ) Yet to be created -->
+  <%- include('unique-section/footer-analytics.ejs', {tracking : tracking_list})
+  %>
+  <!-- End Footer Script With Analytics Section -->
 
-<!-- Start Footer Unique Script Onload Section -->
-<!-- TODO: jaimin - ('unique-section.footer-script' ) Yet to be created -->
-<!-- End Footer Unique Script Onload Section -->
+  <!-- Start Footer Unique Script Onload Section -->
+  <!-- TODO: jaimin - ('unique-section.footer-script' ) Yet to be created -->
+  <%- include('unique-section/footer-script.ejs', {tracking : tracking_list})
+  %>
+  <!-- End Footer Unique Script Onload Section -->
 
-<!-- Start Footer Script Onload Section -->
-<!-- TODO: jaimin - ('page-builder.footer-script' ) Yet to be created -->
-<!-- End Footer Script Onload Section -->
-
+  <!-- Start Footer Script Onload Section -->
+  <!-- TODO: jaimin - ('page-builder.footer-script' ) Yet to be created -->
+  <%- include('page-builder/footer-script.ejs',{
+    payment_integration_data:payment_integration_data,
+    analyticsData:analyticsData}) %>
+  <!-- End Footer Script Onload Section -->
 </html>

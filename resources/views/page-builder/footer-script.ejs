@@ -1,0 +1,980 @@
+<script>
+$(document).ready(function() {
+    var session_id = "<%= typeof session_id !== 'undefined' ? session_id : '' %>";
+    var paypal_token = "<%= typeof paypal_token !== 'undefined' ? paypal_token : '' %>";
+    if (session_id) {
+        StripeCreateOrder();
+    }
+    if (paypal_token) {
+        PaypalCreateOrder();
+    }
+
+
+
+    $(".razorpay-payment-btn-init").click(function(e) {
+        e.preventDefault();
+        var option = JSON.parse($(this).attr("data-value"));
+        var order = JSON.parse($(this).attr("data-order"));
+        var msg = "";
+        jQuery('.preloader-custom-gif').show();
+        jQuery('.preloader').show();
+        jQuery.ajax({
+            url: "/page-builder/get-order",
+            type: "POST",
+            data: {
+                '_token': '{{csrf_token()}}',
+                "order_data": order
+            },
+            success: function(b) {
+                if (b.data) {
+                    $(document).find('meta[name="_token"]').attr('content',
+                        '{{ csrf_token() }}');
+                    jQuery('.preloader-custom-gif').hide();
+                    jQuery('.preloader').hide();
+                    rezorpayCreateOrder(option, b.data.id, order);
+                } else {
+                    jQuery('.preloader-custom-gif').hide();
+                    jQuery('.preloader').hide();
+                }
+            },
+            error: function(jqXHR, exception) {
+                jQuery('.preloader-custom-gif').hide();
+                jQuery('.preloader').hide();
+
+            },
+        });
+    });
+
+    $(".paypal-payment-btn-init").click(function(e) {
+        e.preventDefault();
+        var order = JSON.parse($(this).attr("data-order"));
+        var msg = "";
+        jQuery('.preloader-custom-gif').show();
+        jQuery('.preloader').show();
+        jQuery.ajax({
+            url: "/page-builder/get-order",
+            type: "POST",
+            data: {
+                '_token': '{{ csrf_token() }}',
+                "order_data": order
+            },
+            success: function(b) {
+                if (b.data) {
+                    $(document).find('meta[name="_token"]').attr('content',
+                        '{{ csrf_token() }}');
+                    window.location.href = b.data.redirect_url;
+                    jQuery('.preloader-custom-gif').hide();
+                    jQuery('.preloader').hide();
+                } else {
+                    jQuery('.preloader-custom-gif').hide();
+                    jQuery('.preloader').hide();
+                }
+            },
+            error: function(jqXHR, exception) {
+                jQuery('.preloader-custom-gif').hide();
+                jQuery('.preloader').hide();
+
+            },
+        });
+    });
+
+    $(".stripe-payment-btn-init").click(function(e) {
+        e.preventDefault();
+        var order = JSON.parse($(this).attr("data-order"));
+        var msg = "";
+        jQuery('.preloader-custom-gif').show();
+        jQuery('.preloader').show();
+        jQuery.ajax({
+            url: '/page-builder/get-order',
+            type: "POST",
+            data: {
+                '_token': '{{csrf_token()}}',
+                "order_data": order
+            },
+            success: function(b) {
+                if (b.data.session_id) {
+                    $(document).find('meta[name="_token"]').attr('content',
+                        '{{ csrf_token() }}');
+                    var stripe = Stripe(
+                        'payment_integration_data.stripe_key!==null?payment_integration_data.stripe_key:"";');
+                    return stripe.redirectToCheckout({
+                        sessionId: b.data.session_id
+                    });
+                    jQuery('.preloader-custom-gif').hide();
+                    jQuery('.preloader').hide();
+                } else {
+                    jQuery('.preloader-custom-gif').hide();
+                    jQuery('.preloader').hide();
+                }
+            },
+            error: function(jqXHR, exception) {
+                jQuery('.preloader-custom-gif').hide();
+                jQuery('.preloader').hide();
+
+            },
+        });
+    });
+
+    setTimeout(function() {
+        $(".preloader").hide();
+    }, 1500);
+    save_analytics();
+    
+});
+
+function closePopup() {
+    window.location.href = 'https://linkjoy.io/';
+};
+
+function proceedSuccess() {
+    $('.section-init').show();
+    $('.sensitive-age-modal').hide();
+};
+
+function save_analytics() {
+    $.ajax({
+        method: "POST",
+        url: "/page-builder/analytics",
+        headers: {
+            "X-CSRF-TOKEN": $('meta[name="_token"]').attr("content"),
+        },
+        data: {
+            analytics: {
+                page_builder_id: "<%=analyticsData['page_builder_id'] %>",
+                ip_address: "<%=analyticsData['ip_address'] %>",
+                country: "<%=analyticsData['country'] %>",
+                state: "<%=analyticsData['state'] %>",
+                city: "<%=analyticsData['city'] %>",
+                timezone: "<%=analyticsData['timezone'] %>",
+                device: "<%=analyticsData['device'] %>",
+                platform: "<%=analyticsData['platform'] %>",
+                browser: "<%=analyticsData['browser'] %>",
+                browser_version: "<%=analyticsData['browser_version'] %>",
+                referrer: "<%=analyticsData['referrer'] %>",
+            },
+        },
+        success: function(response) {},
+    });
+}
+
+function load_insta_feed(insta_layout_type, page_builder_id, key) {
+    var load_first = $("#load_first" + key).val();
+
+    var next_url = $("#next_url" + key).val() ?? "";
+    $.ajax({
+        method: "GET",
+        url: "{!! url('/instagram-feed/" +
+            page_builder_id +
+            "?next_max_id=" +
+            next_url +
+            "') !!}",
+        beforeSend: function() {
+            $(".preloader").show();
+            $(".loader" + key).prop("hidden", true);
+        },
+        complete: function() {
+            $(".loader" + key).removeAttr("hidden", false);
+            $(".preloader").hide();
+        },
+        success: function(output) {
+            var html = "";
+            if (output.data.next_max_id) {
+                $("#next_url" + key).val(output.data.next_max_id);
+            } else {
+                $("#next_url" + key).val("");
+                $(".loader" + key).hide();
+            }
+            var insta_match = $("#insta_match" + key).text() ? JSON.parse($("#insta_match" + key).text()) :
+                [];
+            $(output.data.posts).each(function(index, insta_feed) {
+                if (insta_match.indexOf(insta_feed.id) == -1) {
+                    insta_match.push(insta_feed.id);
+                    var insta_layout_class = "";
+                    if (insta_layout_type == 1) {
+                        insta_layout_class =
+                            index === 0 && !load_first ? "big-slide" : "insta-column-big";
+                    } else if (insta_layout_type == 2) {
+                        insta_layout_class = "big-slide-single";
+                    } else if (insta_layout_type == 3) {
+                        insta_layout_class = "insta-column";
+                    } else if (insta_layout_type == 4) {
+                        insta_layout_class =
+                            index === 0 && !load_first ? "big-slide" : "insta-column";
+                    } else if (insta_layout_type == 5) {
+                        insta_layout_class = "insta-column-big";
+                    } else if (insta_layout_type == 6) {
+                        insta_layout_class = "insta-column-mini";
+                    }
+
+                    var layout_width =
+                        insta_layout_type == 2 ? "width:100%;" : "width:100%;";
+                    html +=
+                        `<div class='` +
+                        insta_layout_class +
+                        `'
+                  >
+                  <img
+                  class='img-responsive img-thumbnail border-white p-0 rounded-0'
+                  id="img` + next_url + index + `"
+                  src="` + (insta_feed.thumbnail_url ?? insta_feed.media_url) + `"
+                onerror="imageNotLoad(this)"
+
+                  style="` +
+                        layout_width +
+                        `"
+                  />
+              </div>`;
+                }
+            });
+            $("#insta_match" + key).text(JSON.stringify(insta_match));
+            $("#load_first" + key).val("yes");
+            $("#insta-feed-load" + key).append(html);
+            var width = $("body").width(); //gets height from device
+        },
+        error: function(XMLHttpRequest, textStatus, errorThrown) {},
+
+    });
+}
+
+
+// function load_insta_feed1(insta_layout_type, type, search_value, key) {
+//   if (!search_value) {
+//     return false;
+//   }
+//   var next_url = $("#next_url" + key).val()
+//     ? "&max_id=" + $("#next_url" + key).val()
+//     : "";
+//   var rowperpage = 15;
+//   var load_first = $("#load_first" + key).val();
+//   $.ajax({
+//     method: "GET",
+//     url:
+//       "{!! url('/instagramfeed/" +
+//       search_value +
+//       "?type=" +
+//       type +
+//       "&page=" +
+//       rowperpage +
+//       next_url +
+//       "') !!}",
+//     beforeSend: function() {
+//       $(".preloader").show();
+//       $(".loader" + key).prop("hidden", true);
+//     },
+//     complete: function() {
+//       $(".loader" + key).removeAttr("hidden", false);
+//       $(".preloader").hide();
+//     },
+//     success: function(output) {
+
+//       var html = "";
+//       if (output.next_max_id) {
+//         if (output.next_max_id) {
+//           $("#next_url" + key).val(output.next_max_id);
+//         } else if (output.next_max_tag_id) {
+//           $("#next_url" + key).val(output.next_max_tag_id);
+//         } else {
+//           $("#next_url" + key).val("");
+//           $(".loader" + key).hide();
+//         }
+//       } else {
+//         $("#next_url" + key).val("");
+//         $(".loader" + key).hide();
+//       }
+//       var insta_match =  $("#insta_match" + key).text()? JSON.parse($("#insta_match" + key).text()):[];
+//       $(output.posts).each(function(index, insta_feed) {
+//         if(insta_match.indexOf(insta_feed.post_id) == -1){
+//         insta_match.push(insta_feed.post_id);
+//         var insta_layout_class = "";
+//         if (insta_layout_type == 1) {
+//           insta_layout_class =
+//             index === 0 && !load_first ? "big-slide" : "insta-column-big";
+//         } else if (insta_layout_type == 2) {
+//           insta_layout_class = "big-slide-single";
+//         } else if (insta_layout_type == 3) {
+//           insta_layout_class = "insta-column";
+//         } else if (insta_layout_type == 4) {
+//           insta_layout_class =
+//             index === 0 && !load_first ? "big-slide" : "insta-column";
+//         }else if (insta_layout_type == 5) {
+//           insta_layout_class = "insta-column-big";
+//         }else if (insta_layout_type == 6) {
+//           insta_layout_class = "insta-column-mini";
+//         }
+
+
+//         var layout_width =
+//           insta_layout_type == 2 ? "width:100%;" : "width:100%;";
+//         html +=
+//           `<div class='` +
+//           insta_layout_class +
+//           `'
+//             >
+//             <img
+//             class='img-responsive img-thumbnail border-white p-0 rounded-0'
+//             id="img`+next_url+index+`"
+//             src="`+insta_feed.image_url +`"
+//           onerror="imageNotLoad(this)"
+
+//             style="` +
+//           layout_width +
+//           `"
+//             />
+//        </div>`;
+//       }
+//       });
+//       $("#insta_match" + key).text(JSON.stringify(insta_match));
+//       $("#load_first" + key).val("yes");
+//       $("#insta-feed-load" + key).append(html);
+//       var width = $("body").width(); //gets height from device
+//     },
+//     error: function(XMLHttpRequest, textStatus, errorThrown) {},
+//   });
+// };
+
+async function getInstagramImage(image_url) {
+    const base64image = await fetch(image_url)
+        .then((response) => response.blob())
+        .then((images) => {
+            const reader = new FileReader();
+            reader.readAsDataURL(images);
+            return new Promise((resolve) => {
+                reader.onloadend = () => {
+                    resolve(reader.result);
+                };
+            });
+        })
+        .then((image) => {
+            return image;
+        });
+    return base64image;
+};
+async function setBase64ofImage(image_url, id) {
+    console.log("🚀 ~ file: footer-script.blade.php ~ line 269 ~ setBase64ofImage ~ id", id)
+    const imageOutput = await getInstagramImage(
+        image_url
+    );
+    document.getElementById(id).src = imageOutput;
+};
+
+// function load_insta_feed(insta_layout_type, type, search_value, key) {
+//   if (!search_value) {
+//     return false;
+//   }
+//   var next_url = $("#next_url" + key).val()
+//     ? "&max_id=" + $("#next_url" + key).val()
+//     : "";
+//   var rowperpage = 12;
+//   var load_first = $("#load_first" + key).val();
+//   $.ajax({
+//     method: "GET",
+//     url:
+//       "{!! url('/instagramfeed/" +
+//       search_value +
+//       "?type=" +
+//       type +
+//       "&page=" +
+//       rowperpage +
+//       next_url +
+//       "') !!}",
+//     beforeSend: function() {
+//       $(".preloader").show();
+//       $(".loader" + key).prop("hidden", true);
+//     },
+//     complete: function() {
+//       $(".loader" + key).removeAttr("hidden", false);
+//       $(".preloader").hide();
+//     },
+//     success: function(output) {
+//       var html = "";
+//       if (output.data.page_info) {
+//         if (output.data.page_info.end_cursor) {
+//           $("#next_url" + key).val(output.data.page_info.end_cursor);
+//         }  else {
+//           $("#next_url" + key).val("");
+//           $(".loader" + key).hide();
+//         }
+//       } else {
+//         $("#next_url" + key).val("");
+//         $(".loader" + key).hide();
+//       }
+//       if(!output.data.edges){
+//           return false;
+//       }
+
+//       $(output.data.edges).each(function(index, insta_feed) {
+
+//         var insta_layout_class = "";
+//         if (insta_layout_type == 1) {
+//           insta_layout_class =
+//             index === 0 && !load_first ? "big-slide" : "insta-column-big";
+//         } else if (insta_layout_type == 2) {
+//           insta_layout_class = "big-slide-single";
+//         } else if (insta_layout_type == 3) {
+//           insta_layout_class = "insta-column";
+//         } else if (insta_layout_type == 4) {
+//           insta_layout_class =
+//             index === 0 && !load_first ? "big-slide" : "insta-column";
+//         }
+
+//         var layout_width =
+//           insta_layout_type == 2 ? "width:100%;" : "width:100%;";
+//         html +=
+//           `<div class='` +
+//           insta_layout_class +
+//           `'
+//             >
+//             <img
+//             src="` +
+//             insta_feed.node.thumbnail_src +
+//           `"
+//           onerror="imageNotLoad(this)"
+
+//             style="` +
+//           layout_width +
+//           `"
+//             />
+//        </div>`;
+
+//       });
+//       $("#load_first" + key).val("yes");
+//       $("#insta-feed-load" + key).append(html);
+//       var width = $("body").width(); //gets height from device
+//     },
+//     error: function(XMLHttpRequest, textStatus, errorThrown) {},
+//   });
+// }
+
+function load_youtube_videos(youtube_layout_type, url, key) {
+    var channel_id = url.split("/")[4];
+    if (!channel_id) {
+        return false;
+    }
+    var next_url = $("#next_url" + key).val() ?
+        "&pageToken=" + $("#next_url" + key).val() :
+        "";
+    var rowperpage = 10;
+    var load_first = $("#load_first" + key).val();
+    $.ajax({
+        method: "GET",
+        url: "{!! url('/youtube-video/" +
+            channel_id +
+            "?page=" +
+            rowperpage +
+            next_url +
+            "') !!}",
+        beforeSend: function() {
+            $(".preloader").show();
+            $(".loader" + key).prop("hidden", true);
+        },
+        complete: function() {
+            $(".loader" + key).removeAttr("hidden", false);
+            $(".preloader").hide();
+        },
+        success: function(output) {
+            var html = "";
+            if (output) {
+                if (output.nextPageToken) {
+                    $("#next_url" + key).val(output.nextPageToken);
+                } else {
+                    $("#next_url" + key).val("");
+                    $(".loader" + key).hide();
+                }
+            } else {
+                $("#next_url" + key).val("");
+                $(".loader" + key).hide();
+            }
+            $(output).each(function(index, youtube_video) {
+
+
+                var insta_layout_class = "";
+                if (youtube_layout_type == 1) {
+                    insta_layout_class = "content-flex youtube_init";
+                } else if (youtube_layout_type == 2) {
+                    insta_layout_class = "youtube_bottom_init";
+                }
+
+                html += `<a  target="_blank" href="` + youtube_video.link + `">`;
+                html +=
+                    `<div
+    class='align-items-center ` +
+                    insta_layout_class +
+                    `'
+    >
+
+    <div class="button-image-init">
+                     <img src="` +
+                    youtube_video.img +
+                    `" onerror="imageNotLoad(this)" />
+                   </div>
+
+
+    <div class="right_text">
+                     <span class="font-weight-bolder px-3">
+                       ` +
+                    youtube_video.title +
+                    `
+                     </span>
+                   </div>
+       </div>`;
+                html += `</a>`;
+            });
+
+            $("#load_first" + key).val("yes");
+            $("#youtube-videos-load" + key).append(html);
+            var width = $("body").width(); //gets height from device
+        },
+        error: function(XMLHttpRequest, textStatus, errorThrown) {},
+    });
+}
+
+function load_medium_blog(medium_layout_type, url, key) {
+    if (!url) {
+        return false;
+    }
+    var regexp1 = /@(\S)/g;
+    var user_name = "";
+    var result_At = url.match(regexp1);
+    var feed_url = "";
+    if (result_At) {
+        user_name = url.split("/")[3];
+    } else {
+        var slash = url.split("/")[2];
+        user_name = "@" + slash.split(".")[0];
+    }
+
+    if (user_name) {
+        var feed_url_set =
+            `https://medium.com/feed/@` +
+            user_name +
+            `&rss=https://medium.com/feed/@` +
+            user_name +
+            `/letest`;
+
+        $.ajax({
+            method: "GET",
+            url: `{!! url('/medium-feed/` + user_name + `?rss_url=` + feed_url_set + `') !!}`,
+            beforeSend: function() {
+                $(".preloader").show();
+                $(".loader" + key).prop("hidden", true);
+            },
+            complete: function() {
+                $(".loader" + key).removeAttr("hidden", false);
+                $(".preloader").hide();
+            },
+            success: function(response) {
+                var html = "";
+                if (response.status == "ok") {
+                    if (response.items.length > 0) {
+                        $(response.items).each(function(index, medium_feed) {
+                            var insta_layout_class = "";
+                            if (medium_layout_type == 1) {
+                                insta_layout_class = "content-flex youtube_init";
+                            } else if (medium_layout_type == 2) {
+                                insta_layout_class = "youtube_bottom_init";
+                            }
+                            html += `<a  target="_blank" href="` + medium_feed.link + `">`;
+                            html +=
+                                `<div
+             class='align-items-center ` +
+                                insta_layout_class +
+                                `'
+             >
+                <img src="` +
+                                medium_feed.thumbnail +
+                                `" onerror="imageNotLoad(this)" />
+
+                <div class="right_text">
+                            <span class="font-weight-bolder px-3">
+                               ` +
+                                medium_feed.title +
+                                `
+                            </span>
+                            </div>
+                </div>`;
+                            html += `</a>`;
+                        });
+                    }
+                }
+                $("#medium-blog-load" + key).append(html);
+                var width = $("body").width(); //gets height from device
+            },
+        })
+    }
+}
+
+function load_dynamic_blog(dynamic_layout_type, url, key) {
+
+    if (url) {
+
+        $.ajax({
+            method: "GET",
+            url: `{!! url('/rss-dynamic-feed/pagebuilder?rss_url=` + url + `') !!}`,
+            beforeSend: function() {
+                $(".preloader").show();
+                $(".loader" + key).prop("hidden", true);
+            },
+            complete: function() {
+                $(".loader" + key).removeAttr("hidden", false);
+                $(".preloader").hide();
+            },
+            success: function(response) {
+                var html = "";
+                if (response.status == "ok") {
+                    if (response.items.length > 0) {
+                        $(response.items).each(function(index, dynamic_feed) {
+                            const regex = /<img.*?src=['"](.*?)['"]/;
+
+                            var insta_layout_class = "";
+                            if (dynamic_layout_type == 1) {
+                                insta_layout_class = "content-flex youtube_init";
+                            } else if (dynamic_layout_type == 2) {
+                                insta_layout_class = "youtube_bottom_init";
+                            }
+                            html += `<a  target="_blank" href="` + dynamic_feed.link + `">`;
+                            html +=
+                                `<div
+             class='align-items-center ` +
+                                insta_layout_class +
+                                `'
+             >
+                <img src="` +
+                                (dynamic_feed.thumbnail ? dynamic_feed.thumbnail : (dynamic_feed
+                                    .enclosure.link ?
+                                    dynamic_feed.enclosure.link : regex.exec(dynamic_feed
+                                        .content)[1])) +
+                                `" onerror="imageNotLoad(this)" />
+
+                <div class="right_text">
+                            <span class="font-weight-bolder px-3">
+                               ` +
+                                dynamic_feed.title +
+                                `
+                            </span>
+                            </div>
+                </div>`;
+                            html += `</a>`;
+                        });
+                    }
+                }
+                $("#dynamic-blog-load" + key).append(html);
+                var width = $("body").width(); //gets height from device
+            },
+        })
+    }
+}
+
+function lineColorSet(data, key) {
+    var social_link_section = data ? JSON.parse(data) : [];
+    let color = social_link_section.module_data.is_color ?
+        social_link_section.module_data.is_color :
+        "#000";
+
+    let line_color = social_link_section.module_data.is_color ?
+        "#delimiter-render-" +
+        key +
+        " .delimiter-chooser.delimiter-break span:before{background-color: " +
+        color +
+        "} #delimiter-render-" +
+        key +
+        " .delimiter-chooser.delimiter-break span:after{background-color: " +
+        color +
+        "} #delimiter-render-" +
+        key +
+        " .delimiter-break-inner svg path{stroke: " +
+        color +
+        "!important}" +
+        "#delimiter-render-" +
+        key +
+        " .delimiter-break-inner svg line{stroke: " +
+        color +
+        "!important}" +
+        "#delimiter-render-" +
+        key +
+        " .delimiter-break-inner svg circle{stroke: " +
+        color +
+        "!important}" +
+        "#delimiter-render-" +
+        key +
+        " .delimiter-break-inner svg polyline{stroke: " +
+        color +
+        "!important}" :
+        "";
+
+    let line_edge = social_link_section.module_data.is_edge ?
+        "#delimiter-render-" +
+        key +
+        " .delimiter-chooser.delimiter-break span:before{background: linear-gradient(to left," +
+        color +
+        " 0,rgba(255,255,255,0) 100%);} #delimiter-render-" +
+        key +
+        " .delimiter-chooser.delimiter-break span:after{background: linear-gradient(to right," +
+        color +
+        " 0,rgba(255,255,255,0) 100%);}" :
+        "#delimiter-render-" +
+        key +
+        " .delimiter-chooser.delimiter-break span:before{background:" +
+        color +
+        "} #delimiter-render-" +
+        key +
+        " .delimiter-chooser.delimiter-break span:after{background: " +
+        color +
+        "}";
+
+    let left_right_space =
+        social_link_section.layout_type == 1 || social_link_section.layout_type == 2 ?
+        "0%!important;width: 50%!important;" :
+        "0%!important;width: 48%!important;";
+
+    let line_width =
+        social_link_section.module_data.is_width == true ?
+        "#delimiter-render-" +
+        key +
+        " .delimiter-chooser.delimiter-break span:before{left: " +
+        left_right_space +
+        " transform: translate(0,0);}" +
+        "#delimiter-render-" +
+        key +
+        " .delimiter-chooser.delimiter-break span:after{right: " +
+        left_right_space +
+        "}" :
+        "#delimiter-render-" +
+        key +
+        " .delimiter-chooser.delimiter-break span:before{left: inherit!important; width: 20%!important; transform: translate(-100%, 0);}" +
+        "#delimiter-render-" +
+        key +
+        " .delimiter-chooser.delimiter-break span:after{right:inherit!important; width: 20%!important;}";
+
+    $("body").append(
+        "<style>" + line_color + " " + line_width + " " + line_edge + "</style>"
+    );
+}
+
+function StripeCreateOrder() {
+    var uri = window.location.toString();
+    const queryString = window.location.search;
+    const parameters = new URLSearchParams(queryString);
+    const session_id = parameters.get('session_id');
+    const form_id = parameters.get('form_id');
+    const page_builder_id = parameters.get('page_builder_id');
+    const type = parameters.get('type');
+    const redirect_url = parameters.get('success_redirect_url');
+    if (session_id) {
+        jQuery('.preloader-custom-gif').show();
+        jQuery('.preloader').show();
+        jQuery.ajax({
+            url: '{!! url("/page-builder/new-payment") !!}',
+            type: "POST",
+            data: {
+                '_token': '{{ csrf_token() }}',
+                "payment_data": {
+                    type: type,
+                    session_id: session_id,
+                    form_id: form_id,
+                    page_builder_id: page_builder_id
+                }
+            },
+            success: function(b) {
+                if (b.data) {
+                    if (uri.indexOf("?") > 0) {
+                        var clean_uri = uri.substring(0, uri.indexOf("?"));
+                        window.history.replaceState({}, document.title, clean_uri);
+                    }
+                    $(document).find('meta[name="_token"]').attr('content', '{{ csrf_token() }}');
+                    $.toaster({
+                        priority: 'success',
+                        title: 'Success',
+                        message: 'Payment has been successfully paid.',
+                        timeout: 8000
+                    });
+                    if (redirect_url != null) {
+                        window.location = redirect_url
+                    }
+                    jQuery('.preloader-custom-gif').hide();
+                    jQuery('.preloader').hide();
+
+                } else {
+                    if (uri.indexOf("?") > 0) {
+                        var clean_uri = uri.substring(0, uri.indexOf("?"));
+                        window.history.replaceState({}, document.title, clean_uri);
+                    }
+                    $.toaster({
+                        priority: 'danger',
+                        title: 'Error',
+                        message: 'Payment failed!',
+                        timeout: 8000
+                    });
+                    jQuery('.preloader-custom-gif').hide();
+                    jQuery('.preloader').hide();
+                }
+            },
+            error: function(jqXHR, exception) {
+                if (uri.indexOf("?") > 0) {
+                    var clean_uri = uri.substring(0, uri.indexOf("?"));
+                    window.history.replaceState({}, document.title, clean_uri);
+                }
+                $.toaster({
+                    priority: 'danger',
+                    title: 'Error',
+                    message: 'Payment failed!',
+                    timeout: 8000
+                });
+                jQuery('.preloader-custom-gif').hide();
+                jQuery('.preloader').hide();
+            },
+        });
+
+    }
+
+}
+
+function PaypalCreateOrder() {
+    var uri = window.location.toString();
+    const queryString = window.location.search;
+    const parameters = new URLSearchParams(queryString);
+    const token = parameters.get('token');
+    const form_id = parameters.get('form_id');
+    const page_builder_id = parameters.get('page_builder_id');
+    const type = parameters.get('type');
+    const redirect_url = parameters.get('success_redirect_url');
+    if (token) {
+        jQuery('.preloader-custom-gif').show();
+        jQuery('.preloader').show();
+        jQuery.ajax({
+            url: '{!! url("/page-builder/new-payment") !!}',
+            type: "POST",
+            data: {
+                '_token': '{{ csrf_token() }}',
+                "payment_data": {
+                    type: type,
+                    order_id: token,
+                    form_id: form_id,
+                    page_builder_id: page_builder_id
+                }
+            },
+            success: function(b) {
+                if (b.data) {
+                    $(document).find('meta[name="_token"]').attr('content', '{{ csrf_token() }}');
+                    $.toaster({
+                        priority: 'success',
+                        title: 'Success',
+                        message: 'Payment has been successfully paid.',
+                        timeout: 8000
+                    });
+                    if (redirect_url != null) {
+                        window.location = redirect_url
+                    }
+                    jQuery('.preloader-custom-gif').hide();
+                    jQuery('.preloader').hide();
+                    if (uri.indexOf("?") > 0) {
+                        var clean_uri = uri.substring(0, uri.indexOf("?"));
+                        window.history.replaceState({}, document.title, clean_uri);
+                    }
+                } else {
+                    $.toaster({
+                        priority: 'danger',
+                        title: 'Error',
+                        message: 'Payment failed!',
+                        timeout: 8000
+                    });
+                    jQuery('.preloader-custom-gif').hide();
+                    jQuery('.preloader').hide();
+                    if (uri.indexOf("?") > 0) {
+                        var clean_uri = uri.substring(0, uri.indexOf("?"));
+                        window.history.replaceState({}, document.title, clean_uri);
+                    }
+                }
+            },
+            error: function(jqXHR, exception) {
+                $.toaster({
+                    priority: 'danger',
+                    title: 'Error',
+                    message: 'Payment failed!',
+                    timeout: 8000
+                });
+                jQuery('.preloader-custom-gif').hide();
+                jQuery('.preloader').hide();
+                if (uri.indexOf("?") > 0) {
+                    var clean_uri = uri.substring(0, uri.indexOf("?"));
+                    window.history.replaceState({}, document.title, clean_uri);
+                }
+            },
+        });
+
+    }
+
+}
+
+function rezorpayCreateOrder(option, order_id, order) {
+    if (option) {
+        option.order_id = order_id;
+        option.handler = function(response) {
+            if (response.razorpay_payment_id) {
+                order.razorpay_signature = response.razorpay_signature;
+                order.razorpay_payment_id = response.razorpay_payment_id;
+                order.razorpay_order_id = response.razorpay_order_id;
+                jQuery('.preloader-custom-gif').show();
+                jQuery('.preloader').show();
+                jQuery.ajax({
+                    url: '{!! url("/page-builder/new-payment") !!}',
+                    type: "POST",
+                    data: {
+                        '_token': '{{ csrf_token() }}',
+                        "payment_data": order
+                    },
+                    success: function(b) {
+                        if (b.data) {
+                            $(document).find('meta[name="_token"]').attr('content',
+                                '{{ csrf_token() }}');
+                            jQuery('.preloader-custom-gif').hide();
+                            jQuery('.preloader').hide();
+                            $.toaster({
+                                priority: 'success',
+                                title: 'Success',
+                                message: 'Payment has been successfully paid.',
+                                timeout: 8000
+                            });
+                            window.location = order.callback_url
+                        } else {
+                            jQuery('.preloader-custom-gif').hide();
+                            jQuery('.preloader').hide();
+                            $.toaster({
+                                priority: 'danger',
+                                title: 'Error',
+                                message: 'Payment failed!',
+                                timeout: 8000
+                            });
+                        }
+                    },
+                    error: function(jqXHR, exception) {
+                        jQuery('.preloader-custom-gif').hide();
+                        jQuery('.preloader').hide();
+                        $.toaster({
+                            priority: 'danger',
+                            title: 'Error',
+                            message: 'Payment failed!',
+                            timeout: 8000
+                        });
+                    },
+                });
+            }
+        };
+        var rzp1 = new Razorpay(option);
+        rzp1.open();
+    }
+
+}
+
+function setClassForColumns(columns) {
+    if (columns == 2) {
+        // return "w-50";
+        return "button-group-grid-layout-2";
+    } else if (columns == 3) {
+        // return "w-30";
+        return "button-group-grid-layout-3";
+    } else if (columns == 4) {
+        // return "w-25";
+        return "button-group-grid-layout-4";
+    }
+}
+</script>
