@@ -1,71 +1,134 @@
 <!DOCTYPE html>
 <html lang="en">
 
-<head>
+    <head>
 
-    <% if (branding == 1) { %>
-    <title><%= title ? title + ' - Url Retargeting by LinkJoy' : '' %></title>
-    <% } else { %>
-    <title><%= title ? title : '' %></title>
-    <% } %>
+        <% if (branding == 1) { %>
+        <title><%= title ? title + ' - Url Retargeting by LinkJoy' : ''
+            %></title>
+        <% } else { %>
+        <title><%= title ? title : '' %></title>
+        <% } %>
 
-    <!-- Start Head OG Tags Section -->
-    <%- include('unique-section/head-og-tags', {og_tags : og_tags}) %>
-    <!-- End Head OG Tags Section -->
+        <!-- Start Head OG Tags Section -->
+        <%- include('unique-section/head-og-tags', {og_tags : og_tags}) %>
+        <!-- End Head OG Tags Section -->
 
-    <!-- Start Head Unique Section -->
-    <%- include('unique-section/head', {favicon : favicon, branding : branding, facebook_pixel_tracking_id : facebook_pixel_tracking_id}) %>
-    <!-- End Head Unique Section -->
+        <!-- Start Head Unique Section -->
+        <%- include('unique-section/head', {favicon : favicon, branding :
+        branding, facebook_pixel_tracking_id : facebook_pixel_tracking_id}) %>
+        <!-- End Head Unique Section -->
 
-    <link href="/css/url-retargeting.css" rel="stylesheet" >
+        <link href="/css/url-retargeting.css" rel="stylesheet">
 
-    <!-- Start Head With Analytics Section -->
-    <%- include('unique-section/head-analytics', {tracking : tracking_list}) %>
-    <!-- End Head With Analytics Section -->
+        <!-- Start Head With Analytics Section -->
+        <%- include('unique-section/head-analytics', {tracking : tracking_list})
+        %>
+        <!-- End Head With Analytics Section -->
 
-</head>
+    </head>
 
-<body>
-    <% if (gdpr_popup) { %>
-    <!--Creates the popup body-->
-    <div class="popup-overlay">
-        <!--Creates the popup content-->
-        <div class="popup-content">
-            <h2><%= gdpr_popup.popup_content.header_text ? gdpr_popup.popup_content.header_text : 'Your privacy matters to us.' %></h2>
-            <p>
-                <% if (gdpr_popup.popup_content.paragraph_text) { %>
-                <%- gdpr_popup.popup_content.paragraph_text %>
-                <% } else { %>
-                In order to give the best service and a better experience,<br>
-                Our partners use third-party cookies to personalise <br>
-                content, ads, analyse our traffic, etc. <br><br>
+    <body>
+        <% if (gdpr_popup) { %>
+        <!--Creates the popup body-->
+        <div class="popup-overlay">
+            <!--Creates the popup content-->
+            <div class="popup-content">
+                <h2><%= gdpr_popup.popup_content.header_text ?
+                    gdpr_popup.popup_content.header_text :
+                    'Your privacy matters to us.' %></h2>
+                <p>
+                    <% if (gdpr_popup.popup_content.paragraph_text) { %>
+                    <%- gdpr_popup.popup_content.paragraph_text %>
+                    <% } else { %>
+                    In order to give the best service and a better
+                    experience,<br>
+                    Our partners use third-party cookies to personalise <br>
+                    content, ads, analyse our traffic, etc. <br><br>
 
-                If you continue, you consent to the use of this technology across the <br>
-                web.
-                <% } %>
-                <a href="<%= gdpr_popup.link_to_privacy_policy %>" target="_blank" rel="noopener noreferrer">
-                    <%= gdpr_popup.popup_content.hyperlink_text ? gdpr_popup.popup_content.hyperlink_text : 'Click here for more information' %></a>
-            </p>
-            <button class="accept-btn" onclick='acceptPrivacyPolicy()'>
-                <%= gdpr_popup.popup_content.allow_button_text ? gdpr_popup.popup_content.allow_button_text : 'Continue' %>
-            </button>
-            <div class="decline" onclick='closePopup()'>
-                <%= gdpr_popup.popup_content.decline_button_text ? gdpr_popup.popup_content.decline_button_text : 'Decline' %>
+                    If you continue, you consent to the use of this technology
+                    across the <br>
+                    web.
+                    <% } %>
+                    <a href="<%= gdpr_popup.link_to_privacy_policy %>"
+                        target="_blank" rel="noopener noreferrer">
+                        <%= gdpr_popup.popup_content.hyperlink_text ?
+                        gdpr_popup.popup_content.hyperlink_text :
+                        'Click here for more information' %></a>
+                </p>
+                <button class="accept-btn" onclick='acceptPrivacyPolicy()'>
+                    <%= gdpr_popup.popup_content.allow_button_text ?
+                    gdpr_popup.popup_content.allow_button_text : 'Continue' %>
+                </button>
+                <div class="decline" onclick='closePopup()'>
+                    <%= gdpr_popup.popup_content.decline_button_text ?
+                    gdpr_popup.popup_content.decline_button_text : 'Decline' %>
+                </div>
             </div>
         </div>
-    </div>
-    <% } %>
+        <% } %>
 
-    
-    <!-- TODO: Script part -->
+        <!-- TODO: Script part -->
 
-    <script>
+        <script>
          $(document).ready(function() {
             if ("<%= gdpr_popup !== null %>") {
                 $(".popup-overlay, .popup-content").addClass("active");
+            }else if('<%=is_clicks_exceeded %>')
+            {
+                 window.location = "<%=long_url %>";
+            }
+            else{
+                console.log("Error");
+                save_analytics();
             }
         });
+        function acceptPrivacyPolicy() {
+            save_analytics();
+        }
+        function closePopup() {
+            $(".popup-overlay, .popup-content").removeClass("active");
+            save_analytics();
+            // window.location = "{!!  html_entity_decode($long_url) !!}";
+        };
+        function save_analytics() {
+            $.ajax({
+                method: "POST",
+                async: true,
+                url: '/url-shortener/analytics',
+                // url: "{{$api_domain}}/url-shortener/analytics",
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
+                },
+                data: {
+                    analytics: {
+                       
+                        url_shortener_id: "<%=analyticsData['url_shortener_id']%>",
+                        ip_address: "<%=analyticsData['ip_address']%>",
+                        country: "<%=analyticsData['country'] %>",
+                        state: "<%=analyticsData['state'] %>",
+                        city: "<%=analyticsData['city'] %>",
+                        timezone: "<%=analyticsData['timezone'] %>",
+                        device: "<%=analyticsData['device'] %>",
+                        platform: "<%=analyticsData['platform'] %>",
+                        browser: "<%=analyticsData['browser'] %>",
+                        browser_version: "<%=analyticsData['browser_version'] %>",
+                        ab_rotater_id: "<%=analyticsData['ab_rotater_id'] %>",
+                        geo_location_id: "<%=analyticsData['geo_location_id'] %>",
+                        referrer: "<%=analyticsData['referrer'] %>"
+                    }
+                },
+                success: function(response) {
+                     console.log(analyticsData);
+                    console.log('success');
+                },
+                error: function(error) {
+                    console.error(error);
+                }
+            });
+            window.location = "<%=long_url%>";
+        }
     </script>
-</body>
+    </body>
 
 </html>
