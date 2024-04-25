@@ -157,6 +157,7 @@ pagebuilder_body['scheduled_end_date'])) { %>
 </div>
 <% } %>
 <script type="text/javascript">
+
   function showContent(key) {
     const content = document.getElementById("content-" + key);
 
@@ -172,42 +173,52 @@ pagebuilder_body['scheduled_end_date'])) { %>
     }
   }
 
-  async function downloadVcard() {
-    await fetch("/download-vcard", {
-      method: "POST",
-      headers: {
-        'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
-      },
-      data: {
-        first_name: pagebuilder_body.module_data.first_name,
-        last_name: pagebuilder_body.module_data.last_name,
-        job_title: pagebuilder_body.module_data.position,
-        company: pagebuilder_body.module_data.organization,
-        email: JSON.stringify(pagebuilder_body.module_data.email),
-        phone: JSON.stringify(pagebuilder_body.module_data.phone),
-        address: JSON.stringify(pagebuilder_body.module_data.address),
-        availability: pagebuilder_body.module_data.availability,
-      },
-      success: function(response) {
+ async function downloadVcard() {
+    try {
+      const response = await fetch("/download-vcard", {
+        method: "POST",
+        headers: {
+          'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content'),
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          first_name: '<%- pagebuilder_body.module_data.first_name %>',
+          last_name: '<%- pagebuilder_body.module_data.last_name %>',
+          job_title: '<%- pagebuilder_body.module_data.position %>',
+          company: '<%- pagebuilder_body.module_data.organization %>',
+          email: '<%- JSON.stringify(pagebuilder_body.module_data.email) %>',
+          phone: '<%- JSON.stringify(pagebuilder_body.module_data.phone) %>',
+          address: '<%- JSON.stringify(pagebuilder_body.module_data.address)%>',
+          availability: '<%- pagebuilder_body.module_data.availability%>',
+        }),
+      })
+
+      const result = response.json();
+
+      console.log(result)
+
+      if (result) {
         const url = window.URL.createObjectURL(new Blob([response], {
           type: "text/vcard;charset=utf-8"
         }));
         const link = document.createElement('a');
-        link.href = url;
+        var firstName = '<%-  pagebuilder_body.module_data.first_name  %>';
+        var lastName = '<%-  pagebuilder_body.module_data.last_name %>';
+        link.href = `vcard/${firstName}${lastName}.vcf`;
 
-        var firstName = pagebuilder_body.module_data.first_name;
-        var lastName = pagebuilder_body.module_data.last_name;
         var fileName = firstName + '-' + lastName + '.vcf';
-
         link.setAttribute('download', fileName);
         document.body.appendChild(link);
-        link.click();
-      },
-      error: function(error) {
-        console.error(error);
+        link.click()
       }
-    });
+
+    } catch (error) {
+      console.log(error)
+    }
   }
+
+
+  
 </script>
 
 <style>
